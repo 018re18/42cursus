@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:55:03 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/05 14:39:01 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/09 20:25:08 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ char	*get_next_line(int fd)
 	save_l = gnl.tmp;
 	return (gnl.line);
 }
+
 // #include <fcntl.h>
 // #include <stdio.h>
 
