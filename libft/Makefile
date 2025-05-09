@@ -62,8 +62,8 @@ $(NAME): $(OBJS)
 %.o: %.c $(HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-bonus:$(OBJS) $(BONUS_OBJS)
-	ar rc $(NAME) $(OBJS) $(BONUS_OBJS)
+bonus:
+	$(CC) $(CFLAGS) -c $(BONUS_SRCS)
 
 clean:
 	rm -f $(OBJS) $(BONUS_OBJS)
