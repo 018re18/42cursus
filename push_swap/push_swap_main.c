@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:04:16 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/15 18:22:32 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/15 20:21:02 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,13 @@ int	*get_stkA(int argc, char **argv)
 int	main(int argc, char **argv)
 {
 	t_stk	A;
+	t_stk	B;
 	t_stk	res_stk;
 
 	if (argc <= 1)
 		return (0);
 	A.stk = get_stkA(argc, argv);
+	B.stk = (int *)malloc(sizeof(int) * (argc - 1));
 	if (!A.stk)
 	{
 		write(2, "Error\n", 6);
@@ -93,6 +95,6 @@ int	main(int argc, char **argv)
 		write(2, "Error\n", 6);
 		return (-1);
 	}
-	sortgahairuyo!!;
+	quick_sort_sp(A, B, 0, argc - 1);
 	return (0);
 }

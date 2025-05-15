@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 11:44:13 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/15 18:35:30 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/15 20:18:34 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,18 @@ int	sort_A_to_B(t_stk *A, t_stk *B, int min, int max)
 	int	pivot;
 	int	i;
 	int	j;
+	int	count_B;
 
 	pivot = min + (max - min) / 2;
 	i = 0;
-	j = A->len;
-	while (i <= j)
+	j = max - min + 1;
+	count_pb = 0;
+	while (i < j)
 	{
-		if (A->rank[i] >= pivot)
+		if (A->rank[i] <= pivot)
 		{
 			pb(A, B);
+			count_B++;
 		}
 		else
 		{
@@ -33,7 +36,7 @@ int	sort_A_to_B(t_stk *A, t_stk *B, int min, int max)
 		}
 		i++;
 	}
-	return (pivot);
+	return (count_B);
 }
 
 int	sort_B_to_A(t_stk *A, t_stk *B, int min, int max)
@@ -44,10 +47,10 @@ int	sort_B_to_A(t_stk *A, t_stk *B, int min, int max)
 
 	pivot = min + (max - min) / 2;
 	i = 0;
-	j = B->len;
-	while (i <= j)
+	j = max - min + 1;
+	while (i < j)
 	{
-		if (B->rank >= pivot)
+		if (B->rank > pivot)
 		{
 			pa(A, B);
 		}
@@ -144,17 +147,16 @@ void	sort_sB(t_stk *B)
 
 void	quick_sort_sp(t_stk *A, t_stk *B, int min, int max)
 {
-	A->len = max;
-	int pivot_place;
+	int	count_B;
 
-	pivot_place=sort_A_to_B(A, B, min, max);
-	if (A->len == 2 || A->len == 3)
+	if ((max - min + 1) <= 3)
+	{
 		sort_sA(A);
-	else
-		quick_sort_sp(A,B,min,pivot_place);
-	sort_B_to_A(A,B,pivot_place,max);
-	if ()
-		sort_sB(B);
-	else
-		quick_sort_sp(A,B,);
+		return ;
+	}
+	A->len = max;
+	count_B = sort_A_to_B(A, B, min, max);
+	quick_sort_sp(A, B, min + count_B, max);
+	sort_B_to_A(A, B, min, min + count_B + 1);
+	quick_sort_sp(A, B, min, min + count_B + 1);
 }
