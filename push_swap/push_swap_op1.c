@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:50:51 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/14 20:16:05 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/18 19:14:22 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ void	sa(t_stk *A, int mode)
 	tmp = A->stk[0];
 	A->stk[0] = A->stk[1];
 	A->stk[1] = tmp;
+	tmp = A->rank[0];
+	A->rank[0] = A->rank[1];
+	A->rank[1] = tmp;
 	if (mode == 1)
 		write(1, "sa\n", 3);
 }
@@ -34,6 +37,9 @@ void	sb(t_stk *B, int mode)
 	tmp = B->stk[0];
 	B->stk[0] = B->stk[1];
 	B->stk[1] = tmp;
+	tmp = B->rank[0];
+	B->rank[0] = B->rank[1];
+	B->rank[1] = tmp;
 	if (mode == 1)
 		write(1, "sb\n", 3);
 }
@@ -55,14 +61,17 @@ void	pa(t_stk *A, t_stk *B)
 	while (i > 0)
 	{
 		A->stk[i] = A->stk[i - 1];
+		A->rank[i] = A->rank[i - 1];
 		i--;
 	}
-	A->stk[i] = B->stk[0];
+	A->stk[0] = B->stk[0];
+	A->rank[0] = B->rank[0];
 	A->len++;
 	i = 0;
 	while (i < B->len - 1)
 	{
 		B->stk[i] = B->stk[i + 1];
+		B->rank[i] = B->rank[i + 1];
 		i++;
 	}
 	B->len--;
@@ -79,14 +88,17 @@ void	pb(t_stk *A, t_stk *B)
 	while (i > 0)
 	{
 		B->stk[i] = B->stk[i - 1];
+		B->rank[i] = B->rank[i - 1];
 		i--;
 	}
-	B->stk[i] = A->stk[0];
+	B->stk[0] = A->stk[0];
+	B->rank[0] = A->rank[0];
 	B->len++;
 	i = 0;
 	while (i < A->len - 1)
 	{
 		A->stk[i] = A->stk[i + 1];
+		A->rank[i] = A->rank[i + 1];
 		i++;
 	}
 	A->len--;

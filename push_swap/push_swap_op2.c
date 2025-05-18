@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 20:17:18 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/14 20:36:25 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/18 19:14:27 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@ void	ra(t_stk *A, int mode)
 		i++;
 	}
 	A->stk[i] = tmp;
+	tmp = A->rank[0];
+	i = 0;
+	while (i < A->len - 1)
+	{
+		A->rank[i] = A->rank[i + 1];
+		i++;
+	}
+	A->rank[i] = tmp;
 	if (mode == 1)
 		write(1, "ra\n", 3);
 }
@@ -46,6 +54,14 @@ void	rb(t_stk *B, int mode)
 		i++;
 	}
 	B->stk[i] = tmp;
+	tmp = B->rank[0];
+	i = 0;
+	while (i < B->len - 1)
+	{
+		B->rank[i] = B->rank[i + 1];
+		i++;
+	}
+	B->rank[i] = tmp;
 	if (mode == 1)
 		write(1, "rb\n", 3);
 }

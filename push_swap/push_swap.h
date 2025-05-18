@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:02:44 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/14 20:51:27 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/18 19:14:43 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,12 @@ void	rr(t_stk *A, t_stk *B);
 void	rra(t_stk *A, int mode);
 void	rrb(t_stk *B, int mode);
 void	rrr(t_stk *A, t_stk *B);
-void	quick_sort(int *stk, int min, int max);
+void	ft_quick_sort(int *stk, int min, int max);
 t_stk	get_sortstk_rank(t_stk *A, int argc);
 int		ft_atoi_sp(char *str, int *error);
 int		*get_stkA(int argc, char **argv);
 int		check_same(int *stk, int len);
 void	sort_rank(t_stk *cpy, t_stk *A, int len);
+void	slice_sort(t_stk *A, t_stk *B, int min, int max);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 19:33:55 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/15 11:47:47 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/18 19:14:55 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,15 @@ static int	class_num(int *stk, int min, int max)
 	return (s_area + 1);
 }
 
-void	quick_sort(int *stk, int min, int max)
+void	ft_quick_sort(int *stk, int min, int max)
 {
 	int	pivot_place;
 
 	if (min < max)
 	{
 		pivot_place = class_num(stk, min, max);
-		quick_sort(stk, min, pivot_place - 1);
-		quick_sort(stk, pivot_place + 1, max);
+		ft_quick_sort(stk, min, pivot_place - 1);
+		ft_quick_sort(stk, pivot_place + 1, max);
 	}
 }
 
@@ -75,18 +75,19 @@ t_stk	get_sortstk_rank(t_stk *A, int argc)
 {
 	t_stk	cpy;
 
-	cpy.stk=NULL;
-	cpy.rank=NULL;
+	cpy.stk = NULL;
+	cpy.rank = NULL;
 	cpy.stk = stkdup(A->stk, argc);
 	if (!cpy.stk)
 		return (cpy);
-	quick_sort(cpy.stk, 0, argc - 2);
+	ft_quick_sort(cpy.stk, 0, argc - 2);
 	if (check_same(cpy.stk, argc - 1))
 	{
 		free(cpy.stk);
-		cpy.stk=NULL;
+		cpy.stk = NULL;
 		return (cpy);
 	}
 	sort_rank(&cpy, A, argc - 1);
+	free(cpy.stk);
 	return (cpy);
 }

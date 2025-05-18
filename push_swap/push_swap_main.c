@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:04:16 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/15 20:21:02 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/18 20:30:54 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@ int	ft_atoi_sp(char *str, int *error)
 
 	i = 0;
 	j = sign(str, &i);
+	if (!str[i])
+	{
+		*error = 0;
+		return (0);
+	}
 	num = 0;
 	while (str[i])
 	{
@@ -73,6 +78,18 @@ int	*get_stkA(int argc, char **argv)
 	return (stkA);
 }
 
+static void	free_all(t_stk *A, t_stk *B)
+{
+	if (A->stk)
+		free(A->stk);
+	if (A->rank)
+		free(A->rank);
+	if (B->stk)
+		free(B->stk);
+	if (B->rank)
+		free(B->rank);
+}
+
 int	main(int argc, char **argv)
 {
 	t_stk	A;
@@ -83,18 +100,31 @@ int	main(int argc, char **argv)
 		return (0);
 	A.stk = get_stkA(argc, argv);
 	B.stk = (int *)malloc(sizeof(int) * (argc - 1));
-	if (!A.stk)
+	A.len = argc - 1;
+	B.len = 0;
+	A.rank = NULL;
+	B.rank = NULL;
+	if (!A.stk || !B.stk)
 	{
+		free_all(&A, &B);
 		write(2, "Error\n", 6);
 		return (-1);
 	}
 	res_stk = get_sortstk_rank(&A, argc);
-	if (!res_stk.stk)
+	if (!res_stk.stk && !A.rank)
 	{
-		free(A.stk);
+		free_all(&A, &B);
 		write(2, "Error\n", 6);
 		return (-1);
 	}
-	quick_sort_sp(A, B, 0, argc - 1);
+	B.rank = (int *)malloc(sizeof(int) * (argc - 1));
+	if (!B.rank)
+	{
+		free_all(&A, &B);
+		write(2, "Error\n", 6);
+		return (-1);
+	}
+	slice_sort(&A, &B, 0, argc - 2);
+	free_all(&A, &B);
 	return (0);
 }
