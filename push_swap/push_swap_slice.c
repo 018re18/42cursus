@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 11:12:03 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/18 20:21:20 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/19 19:23:58 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,43 +41,28 @@ static void	mv_A_to_B(t_stk *A, t_stk *B, int min, int max, int num)
 	while (count < num)
 	{
 		i = search_cnk_num(A, min, max);
-		if (i == 1)
-		{
-			j = 0;
-			while (j < A->len)
-			{
-				if (min <= A->rank[0] && A->rank[0] <= max)
-				{
-					pb(A, B);
-					count++;
-					if (B->rank[0] < (max + min) / 2)
-						rb(B, 1);
-					break ;
-				}
-				else
-					ra(A, 1);
-				j++;
-			}
-		}
-		else if (i == 0)
-		{
-			j = 0;
-			while (j < A->len)
-			{
-				rra(A, 1);
-				if (min <= A->rank[0] && A->rank[0] <= max)
-				{
-					pb(A, B);
-					count++;
-					if (B->rank[0] < (max + min) / 2)
-						rb(B, 1);
-					break ;
-				}
-				j++;
-			}
-		}
-		else
+		if (i < 0)
 			return ;
+		j = 0;
+		while (j < A->len)
+		{
+			if (min <= A->rank[0] && A->rank[0] <= max)
+			{
+				pb(A, B);
+				count++;
+				if (B->rank[0] < (max + min) / 2)
+					rb(B, 1);
+				break ;
+			}
+			else
+			{
+				if (i == 1)
+					ra(A, 1);
+				else
+					rra(A, 1);
+			}
+			j++;
+		}
 	}
 }
 
@@ -127,41 +112,24 @@ static void	sort_B_to_A(t_stk *A, t_stk *B, int max, int num)
 	while (count < num)
 	{
 		i = search_max_num(B, max_num);
-		if (i == 1)
-		{
-			j = 0;
-			while (j < B->len)
-			{
-				if (B->rank[0] == max_num)
-				{
-					pa(A, B);
-					count++;
-					max_num--;
-					break ;
-				}
-				else
-					rb(B, 1);
-				j++;
-			}
-		}
-		else if (i == 0)
-		{
-			j = 0;
-			while (j < B->len)
-			{
-				rrb(B, 1);
-				if (B->rank[0] == max_num)
-				{
-					pa(A, B);
-					count++;
-					max_num--;
-					break ;
-				}
-				j++;
-			}
-		}
-		else
+		if (i < 0)
 			return ;
+		j = 0;
+		while (j < B->len)
+		{
+			if (B->rank[0] == max_num)
+			{
+				pa(A, B);
+				count++;
+				max_num--;
+				break ;
+			}
+			else if (i == 1)
+				rb(B, 1);
+			else
+				rrb(B, 1);
+			j++;
+		}
 	}
 }
 
@@ -178,9 +146,9 @@ void	slice_sort(t_stk *A, t_stk *B, int min, int max)
 		return ;
 	}
 	else if (sort_size == 100)
-		cnk_size = 10;
+		cnk_size = 25;
 	else if (sort_size == 500)
-		cnk_size = 20;
+		cnk_size = 50;
 	else
 		return ;
 	cnk_num = sort_size / cnk_size;

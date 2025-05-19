@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:04:16 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/18 20:30:54 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/19 18:15:28 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,44 +14,44 @@
 
 static int	sign(char *str, int *i)
 {
+	int	j;
+
+	j = 1;
 	if (str[*i] == '-' || str[*i] == '+')
 	{
 		if (str[*i] == '-')
-			return (-1);
+			j = -1;
 		(*i)++;
 	}
-	return (1);
+	return (j);
 }
 int	ft_atoi_sp(char *str, int *error)
 {
-	int		i;
-	int		j;
-	long	num;
+	t_ati	a;
 
-	i = 0;
-	j = sign(str, &i);
-	if (!str[i])
+	a.i = 0;
+	a.j = sign(str, &a.i);
+	if (!str[a.i])
 	{
 		*error = 0;
 		return (0);
 	}
-	num = 0;
-	while (str[i])
+	a.num = 0;
+	while (str[a.i])
 	{
-		if (!('0' <= str[i] && str[i] <= '9'))
+		if (!('0' <= str[a.i] && str[a.i] <= '9'))
 		{
 			*error = 0;
 			return (0);
 		}
-		num = num * 10 + (str[i] - '0');
-		if (INT_MIN > num * j || num * j > INT_MAX)
+		a.num = a.num * 10 + (str[a.i] - '0');
+		if (INT_MIN > a.num * a.j || a.num * a.j > INT_MAX)
 		{
-			*error = 0;
-			return (0);
+			return (*error = 0, 0);
 		}
-		i++;
+		a.i++;
 	}
-	return ((int)(num * j));
+	return ((int)(a.num * a.j));
 }
 
 int	*get_stkA(int argc, char **argv)
