@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 11:12:03 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/19 19:23:58 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/20 20:47:55 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ static int	search_max_num(t_stk *B, int max)
 	}
 	return (-1);
 }
+
 static void	sort_B_to_A(t_stk *A, t_stk *B, int max, int num)
 {
 	int	count;
@@ -133,6 +134,101 @@ static void	sort_B_to_A(t_stk *A, t_stk *B, int max, int num)
 	}
 }
 
+static void	sort_sA(t_stk *A)
+{
+	int	a;
+	int	b;
+	int	c;
+
+	if (A->len < 2)
+		return ;
+	if (A->len == 2)
+	{
+		if (A->rank[0] > A->rank[1])
+			sa(A, 1);
+		return ;
+	}
+	a = A->rank[0];
+	b = A->rank[1];
+	c = A->rank[2];
+	if (a > b && a > c)
+		ra(A, 1);
+	else if (b > a && b > c)
+		rra(A, 1);
+	if (A->rank[0] > A->rank[1])
+		sa(A, 1);
+}
+
+static void	sort_sB(t_stk *B)
+{
+	int	a;
+	int	b;
+	int	c;
+
+	if (B->len < 2)
+		return ;
+	if (B->len == 2)
+	{
+		if (B->rank[0] < B->rank[1])
+			sb(B, 1);
+		return ;
+	}
+	a = B->rank[0];
+	b = B->rank[1];
+	c = B->rank[2];
+	if (a < b && a < c)
+		rb(B, 1);
+	else if (b < a && b < c)
+		rrb(B, 1);
+	if (B->rank[0] < B->rank[1])
+		sb(B, 1);
+}
+
+static void	mini_slice(t_stk *A, t_stk *B, int size)
+{
+	int	i;
+	int	j;
+	int	k;
+
+	if (size <= 3)
+	{
+		sort_sA(A);
+		return ;
+	}
+	i = size - 3;
+	k = 0;
+	while (i > 0)
+	{
+		j = 0;
+		while (j < A->len && A->rank[j] != k)
+			j++;
+		if (j <= A->len / 2)
+		{
+			while (j > 0)
+			{
+				ra(A, 1);
+				j--;
+			}
+		}
+		else
+		{
+			j = A->len - j;
+			while (j > 0)
+			{
+				rra(A, 1);
+				j--;
+			}
+		}
+		pb(A, B);
+		k++;
+		i--;
+	}
+	sort_sA(A);
+	sort_sB(B);
+	while (B->len > 0)
+		pa(A, B);
+}
+
 void	slice_sort(t_stk *A, t_stk *B, int min, int max)
 {
 	int	sort_size;
@@ -142,7 +238,7 @@ void	slice_sort(t_stk *A, t_stk *B, int min, int max)
 	sort_size = max - min + 1;
 	if (sort_size <= 6)
 	{
-		// mini_slice(A, B, min, max);
+		mini_slice(A, B, sort_size);
 		return ;
 	}
 	else if (sort_size == 100)
