@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 19:33:55 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/22 12:44:32 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/22 19:52:38 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	ft_quick_sort(int *stk, int min, int max)
 	}
 }
 
-t_stk	get_sortstk_rank(t_stk *A, int argc)
+void	get_sortstk_rank(t_stk *A, int argc)
 {
 	t_stk	cpy;
 
@@ -79,15 +79,13 @@ t_stk	get_sortstk_rank(t_stk *A, int argc)
 	cpy.rank = NULL;
 	cpy.stk = stkdup(A->stk, argc);
 	if (!cpy.stk)
-		return (cpy);
+		return ;
 	ft_quick_sort(cpy.stk, 0, argc - 2);
 	if (check_same(cpy.stk, argc - 1))
 	{
 		free(cpy.stk);
-		cpy.stk = NULL;
-		return (cpy);
+		return ;
 	}
 	sort_rank(&cpy, A, argc - 1);
 	free(cpy.stk);
-	return (cpy);
 }
