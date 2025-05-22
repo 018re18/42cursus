@@ -6,19 +6,19 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 20:17:18 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/18 19:14:27 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/22 14:56:13 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	ra(t_stk *A, int mode)
+int	ra(t_stk *A, int mode, t_res *res)
 {
 	int	tmp;
 	int	i;
 
 	if (A->len < 2)
-		return ;
+		return (0);
 	tmp = A->stk[0];
 	i = 0;
 	while (i < A->len - 1)
@@ -36,16 +36,17 @@ void	ra(t_stk *A, int mode)
 	}
 	A->rank[i] = tmp;
 	if (mode == 1)
-		write(1, "ra\n", 3);
+		res->result[res->place] = 3;
+	return (1);
 }
 
-void	rb(t_stk *B, int mode)
+int	rb(t_stk *B, int mode, t_res *res)
 {
 	int	tmp;
 	int	i;
 
 	if (B->len < 2)
-		return ;
+		return (0);
 	tmp = B->stk[0];
 	i = 0;
 	while (i < B->len - 1)
@@ -63,12 +64,17 @@ void	rb(t_stk *B, int mode)
 	}
 	B->rank[i] = tmp;
 	if (mode == 1)
-		write(1, "rb\n", 3);
+		res->result[res->place] = 4;
+	return (1);
 }
 
-void	rr(t_stk *A, t_stk *B)
+int	rr(t_stk *A, t_stk *B, t_res *res)
 {
-	ra(A, 0);
-	rb(B, 0);
-	write(1, "rr\n", 3);
+	int	i;
+	int	j;
+
+	i = ra(A, 0, res);
+	j = rb(B, 0, res);
+	res->result[res->place] = 5;
+	return (1);
 }

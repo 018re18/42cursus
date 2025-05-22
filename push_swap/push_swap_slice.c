@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 11:12:03 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/20 20:47:55 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/22 15:58:53 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,18 @@ static int	search_cnk_num(t_stk *A, int min, int max)
 	return (-1);
 }
 
-static void	mv_A_to_B(t_stk *A, t_stk *B, int min, int max, int num)
+static void	mv_A_to_B(t_stk *A, t_stk *B, int size, int k, t_res *res)
 {
 	int	j;
 	int	count;
 	int	i;
+	int	min;
+	int	max;
 
 	count = 0;
-	while (count < num)
+	min = size * k;
+	max = size * (k + 1) - 1;
+	while (count < size)
 	{
 		i = search_cnk_num(A, min, max);
 		if (i < 0)
@@ -48,36 +52,32 @@ static void	mv_A_to_B(t_stk *A, t_stk *B, int min, int max, int num)
 		{
 			if (min <= A->rank[0] && A->rank[0] <= max)
 			{
-				pb(A, B);
+				res->place += pb(A, B, res);
 				count++;
 				if (B->rank[0] < (max + min) / 2)
-					rb(B, 1);
+					res->place += rb(B, 1, res);
 				break ;
 			}
 			else
 			{
 				if (i == 1)
-					ra(A, 1);
+					res->place += ra(A, 1, res);
 				else
-					rra(A, 1);
+					res->place += rra(A, 1, res);
 			}
 			j++;
 		}
 	}
 }
 
-static void	sort_A_to_B(t_stk *A, t_stk *B, int cnk_size, int cnk_num)
+static void	sort_A_to_B(t_stk *A, t_stk *B, int size, int num, t_res *res)
 {
 	int	i;
-	int	cnk_min;
-	int	cnk_max;
 
 	i = 0;
-	while (i < cnk_num)
+	while (i < num)
 	{
-		cnk_min = cnk_size * i;
-		cnk_max = cnk_size * (i + 1) - 1;
-		mv_A_to_B(A, B, cnk_min, cnk_max, cnk_size);
+		mv_A_to_B(A, B, size, i, res);
 		i++;
 	}
 }
@@ -101,7 +101,7 @@ static int	search_max_num(t_stk *B, int max)
 	return (-1);
 }
 
-static void	sort_B_to_A(t_stk *A, t_stk *B, int max, int num)
+static void	sort_B_to_A(t_stk *A, t_stk *B, int max, int num, t_res *res)
 {
 	int	count;
 	int	max_num;
@@ -120,21 +120,21 @@ static void	sort_B_to_A(t_stk *A, t_stk *B, int max, int num)
 		{
 			if (B->rank[0] == max_num)
 			{
-				pa(A, B);
+				res->place += pa(A, B, res);
 				count++;
 				max_num--;
 				break ;
 			}
 			else if (i == 1)
-				rb(B, 1);
+				res->place += rb(B, 1, res);
 			else
-				rrb(B, 1);
+				res->place += rrb(B, 1, res);
 			j++;
 		}
 	}
 }
 
-static void	sort_sA(t_stk *A)
+static void	sort_sA(t_stk *A, t_res *res)
 {
 	int	a;
 	int	b;
@@ -145,21 +145,21 @@ static void	sort_sA(t_stk *A)
 	if (A->len == 2)
 	{
 		if (A->rank[0] > A->rank[1])
-			sa(A, 1);
+			res->place += sa(A, 1, res);
 		return ;
 	}
 	a = A->rank[0];
 	b = A->rank[1];
 	c = A->rank[2];
 	if (a > b && a > c)
-		ra(A, 1);
+		res->place += ra(A, 1, res);
 	else if (b > a && b > c)
-		rra(A, 1);
+		res->place += rra(A, 1, res);
 	if (A->rank[0] > A->rank[1])
-		sa(A, 1);
+		res->place += sa(A, 1, res);
 }
 
-static void	sort_sB(t_stk *B)
+static void	sort_sB(t_stk *B, t_res *res)
 {
 	int	a;
 	int	b;
@@ -170,21 +170,21 @@ static void	sort_sB(t_stk *B)
 	if (B->len == 2)
 	{
 		if (B->rank[0] < B->rank[1])
-			sb(B, 1);
+			res->place += sb(B, 1, res);
 		return ;
 	}
 	a = B->rank[0];
 	b = B->rank[1];
 	c = B->rank[2];
 	if (a < b && a < c)
-		rb(B, 1);
+		res->place += rb(B, 1, res);
 	else if (b < a && b < c)
-		rrb(B, 1);
+		res->place += rrb(B, 1, res);
 	if (B->rank[0] < B->rank[1])
-		sb(B, 1);
+		res->place += sb(B, 1, res);
 }
 
-static void	mini_slice(t_stk *A, t_stk *B, int size)
+static void	mini_slice(t_stk *A, t_stk *B, int size, t_res *res)
 {
 	int	i;
 	int	j;
@@ -192,7 +192,7 @@ static void	mini_slice(t_stk *A, t_stk *B, int size)
 
 	if (size <= 3)
 	{
-		sort_sA(A);
+		sort_sA(A, res);
 		return ;
 	}
 	i = size - 3;
@@ -206,7 +206,7 @@ static void	mini_slice(t_stk *A, t_stk *B, int size)
 		{
 			while (j > 0)
 			{
-				ra(A, 1);
+				res->place += ra(A, 1, res);
 				j--;
 			}
 		}
@@ -215,21 +215,21 @@ static void	mini_slice(t_stk *A, t_stk *B, int size)
 			j = A->len - j;
 			while (j > 0)
 			{
-				rra(A, 1);
+				res->place += rra(A, 1, res);
 				j--;
 			}
 		}
-		pb(A, B);
+		res->place += pb(A, B, res);
 		k++;
 		i--;
 	}
-	sort_sA(A);
-	sort_sB(B);
+	sort_sA(A, res);
+	sort_sB(B, res);
 	while (B->len > 0)
-		pa(A, B);
+		res->place += pa(A, B, res);
 }
 
-void	slice_sort(t_stk *A, t_stk *B, int min, int max)
+void	slice_sort(t_stk *A, t_stk *B, int min, int max, t_res *res)
 {
 	int	sort_size;
 	int	cnk_size;
@@ -238,7 +238,7 @@ void	slice_sort(t_stk *A, t_stk *B, int min, int max)
 	sort_size = max - min + 1;
 	if (sort_size <= 6)
 	{
-		mini_slice(A, B, sort_size);
+		mini_slice(A, B, sort_size, res);
 		return ;
 	}
 	else if (sort_size == 100)
@@ -248,6 +248,6 @@ void	slice_sort(t_stk *A, t_stk *B, int min, int max)
 	else
 		return ;
 	cnk_num = sort_size / cnk_size;
-	sort_A_to_B(A, B, cnk_size, cnk_num);
-	sort_B_to_A(A, B, max, sort_size);
+	sort_A_to_B(A, B, cnk_size, cnk_num, res);
+	sort_B_to_A(A, B, max, sort_size, res);
 }

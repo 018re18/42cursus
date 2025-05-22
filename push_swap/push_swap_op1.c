@@ -6,18 +6,18 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:50:51 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/18 19:14:22 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/22 16:01:23 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	sa(t_stk *A, int mode)
+int	sa(t_stk *A, int mode, t_res *res)
 {
 	int	tmp;
-
+	
 	if (A->len < 2)
-		return ;
+		return (0);
 	tmp = A->stk[0];
 	A->stk[0] = A->stk[1];
 	A->stk[1] = tmp;
@@ -25,15 +25,16 @@ void	sa(t_stk *A, int mode)
 	A->rank[0] = A->rank[1];
 	A->rank[1] = tmp;
 	if (mode == 1)
-		write(1, "sa\n", 3);
+		res->result[res->place] = 9;
+	return (1);
 }
 
-void	sb(t_stk *B, int mode)
+int	sb(t_stk *B, int mode, t_res *res)
 {
 	int	tmp;
 
 	if (B->len < 2)
-		return ;
+		return (0);
 	tmp = B->stk[0];
 	B->stk[0] = B->stk[1];
 	B->stk[1] = tmp;
@@ -41,22 +42,27 @@ void	sb(t_stk *B, int mode)
 	B->rank[0] = B->rank[1];
 	B->rank[1] = tmp;
 	if (mode == 1)
-		write(1, "sb\n", 3);
+		res->result[res->place] = 10;
+	return (1);
 }
 
-void	ss(t_stk *A, t_stk *B)
+int	ss(t_stk *A, t_stk *B, t_res *res)
 {
-	sa(A, 0);
-	sb(B, 0);
-	write(1, "ss\n", 3);
+	int	i;
+	int	j;
+
+	i = sa(A, 0, res);
+	j = sb(B, 0, res);
+	res->result[res->place] = 11;
+	return (1);
 }
 
-void	pa(t_stk *A, t_stk *B)
+int	pa(t_stk *A, t_stk *B, t_res *res)
 {
 	int	i;
 
 	if (B->len < 1)
-		return ;
+		return (0);
 	i = A->len;
 	while (i > 0)
 	{
@@ -75,15 +81,16 @@ void	pa(t_stk *A, t_stk *B)
 		i++;
 	}
 	B->len--;
-	write(1, "pa\n", 3);
+	res->result[res->place] = 1;
+	return (1);
 }
 
-void	pb(t_stk *A, t_stk *B)
+int	pb(t_stk *A, t_stk *B, t_res *res)
 {
 	int	i;
 
 	if (A->len < 1)
-		return ;
+		return (0);
 	i = B->len;
 	while (i > 0)
 	{
@@ -102,5 +109,6 @@ void	pb(t_stk *A, t_stk *B)
 		i++;
 	}
 	A->len--;
-	write(1, "pb\n", 3);
+	res->result[res->place] = 2;
+	return (1);
 }

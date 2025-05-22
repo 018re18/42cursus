@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:04:16 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/20 17:08:08 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/22 15:15:00 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,18 @@ int	*get_stkA(int argc, char **argv)
 	return (stkA);
 }
 
+int	*ft_memset(int *s, int c, size_t n)
+{
+	int	i;
+
+	i = 0;
+	while (i < n)
+	{
+		s[i] = c;
+		i++;
+	}
+	return (s);
+}
 static void	free_all(t_stk *A, t_stk *B)
 {
 	if (A->stk)
@@ -95,6 +107,7 @@ int	main(int argc, char **argv)
 	t_stk	A;
 	t_stk	B;
 	t_stk	res_stk;
+	t_res	res;
 
 	if (argc <= 1)
 		return (0);
@@ -124,7 +137,11 @@ int	main(int argc, char **argv)
 		write(2, "Error\n", 6);
 		return (-1);
 	}
-	slice_sort(&A, &B, 0, argc - 2);
+	res.place = 0;
+	ft_memset(res.result, 0, 8000);
+	slice_sort(&A, &B, 0, argc - 2, &res);
+	check_r(res.result);
+	put_res(res.result);
 	free_all(&A, &B);
 	return (0);
 }
