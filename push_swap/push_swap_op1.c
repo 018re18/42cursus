@@ -6,109 +6,109 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:50:51 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/22 16:01:23 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/23 12:35:48 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int	sa(t_stk *A, int mode, t_res *res)
+int	sa(t_stk *a, int mode, t_res *res)
 {
 	int	tmp;
-	
-	if (A->len < 2)
+
+	if (a->len < 2)
 		return (0);
-	tmp = A->stk[0];
-	A->stk[0] = A->stk[1];
-	A->stk[1] = tmp;
-	tmp = A->rank[0];
-	A->rank[0] = A->rank[1];
-	A->rank[1] = tmp;
+	tmp = a->stk[0];
+	a->stk[0] = a->stk[1];
+	a->stk[1] = tmp;
+	tmp = a->rank[0];
+	a->rank[0] = a->rank[1];
+	a->rank[1] = tmp;
 	if (mode == 1)
 		res->result[res->place] = 9;
 	return (1);
 }
 
-int	sb(t_stk *B, int mode, t_res *res)
+int	sb(t_stk *b, int mode, t_res *res)
 {
 	int	tmp;
 
-	if (B->len < 2)
+	if (b->len < 2)
 		return (0);
-	tmp = B->stk[0];
-	B->stk[0] = B->stk[1];
-	B->stk[1] = tmp;
-	tmp = B->rank[0];
-	B->rank[0] = B->rank[1];
-	B->rank[1] = tmp;
+	tmp = b->stk[0];
+	b->stk[0] = b->stk[1];
+	b->stk[1] = tmp;
+	tmp = b->rank[0];
+	b->rank[0] = b->rank[1];
+	b->rank[1] = tmp;
 	if (mode == 1)
 		res->result[res->place] = 10;
 	return (1);
 }
 
-int	ss(t_stk *A, t_stk *B, t_res *res)
+int	ss(t_stk *a, t_stk *b, t_res *res)
 {
 	int	i;
 	int	j;
 
-	i = sa(A, 0, res);
-	j = sb(B, 0, res);
+	i = sa(a, 0, res);
+	j = sb(b, 0, res);
 	res->result[res->place] = 11;
 	return (1);
 }
 
-int	pa(t_stk *A, t_stk *B, t_res *res)
+int	pa(t_stk *a, t_stk *b, t_res *res)
 {
 	int	i;
 
-	if (B->len < 1)
+	if (b->len < 1)
 		return (0);
-	i = A->len;
+	i = a->len;
 	while (i > 0)
 	{
-		A->stk[i] = A->stk[i - 1];
-		A->rank[i] = A->rank[i - 1];
+		a->stk[i] = a->stk[i - 1];
+		a->rank[i] = a->rank[i - 1];
 		i--;
 	}
-	A->stk[0] = B->stk[0];
-	A->rank[0] = B->rank[0];
-	A->len++;
+	a->stk[0] = b->stk[0];
+	a->rank[0] = b->rank[0];
+	a->len++;
 	i = 0;
-	while (i < B->len - 1)
+	while (i < b->len - 1)
 	{
-		B->stk[i] = B->stk[i + 1];
-		B->rank[i] = B->rank[i + 1];
+		b->stk[i] = b->stk[i + 1];
+		b->rank[i] = b->rank[i + 1];
 		i++;
 	}
-	B->len--;
+	b->len--;
 	res->result[res->place] = 1;
 	return (1);
 }
 
-int	pb(t_stk *A, t_stk *B, t_res *res)
+int	pb(t_stk *a, t_stk *b, t_res *res)
 {
 	int	i;
 
-	if (A->len < 1)
+	if (a->len < 1)
 		return (0);
-	i = B->len;
+	i = b->len;
 	while (i > 0)
 	{
-		B->stk[i] = B->stk[i - 1];
-		B->rank[i] = B->rank[i - 1];
+		b->stk[i] = b->stk[i - 1];
+		b->rank[i] = b->rank[i - 1];
 		i--;
 	}
-	B->stk[0] = A->stk[0];
-	B->rank[0] = A->rank[0];
-	B->len++;
+	b->stk[0] = a->stk[0];
+	b->rank[0] = a->rank[0];
+	b->len++;
 	i = 0;
-	while (i < A->len - 1)
+	while (i < a->len - 1)
 	{
-		A->stk[i] = A->stk[i + 1];
-		A->rank[i] = A->rank[i + 1];
+		a->stk[i] = a->stk[i + 1];
+		a->rank[i] = a->rank[i + 1];
 		i++;
 	}
-	A->len--;
+	a->len--;
 	res->result[res->place] = 2;
 	return (1);
 }

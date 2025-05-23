@@ -6,11 +6,11 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 19:11:39 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/22 19:12:50 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/23 12:13:17 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"push_swap.h"
+#include "push_swap.h"
 
 static int	sign(char *str, int *i)
 {
@@ -55,26 +55,26 @@ int	ft_atoi_sp(char *str, int *error)
 	return ((int)(a.num * a.j));
 }
 
-int	*get_stkA(int argc, char **argv)
+int	*get_stka(int argc, char **argv)
 {
 	int	i;
-	int	*stkA;
+	int	*stka;
 	int	error;
 
-	stkA = (int *)malloc(sizeof(int) * (argc - 1));
-	if (!stkA)
+	stka = (int *)malloc(sizeof(int) * (argc - 1));
+	if (!stka)
 		return (NULL);
 	i = 1;
 	while (i < argc)
 	{
 		error = 1;
-		stkA[i - 1] = ft_atoi_sp(argv[i], &error);
+		stka[i - 1] = ft_atoi_sp(argv[i], &error);
 		if (error == 0)
 		{
-			free(stkA);
+			free(stka);
 			return (NULL);
 		}
 		i++;
 	}
-	return (stkA);
+	return (stka);
 }

@@ -6,13 +6,13 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:04:16 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/22 21:13:33 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/23 13:26:58 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static int	*ft_memset(int *s, int c, size_t n)
+static int	*ft_memset(int *s, int c, int n)
 {
 	int	i;
 
@@ -24,61 +24,63 @@ static int	*ft_memset(int *s, int c, size_t n)
 	}
 	return (s);
 }
-static void	free_all(t_stk *A, t_stk *B)
+
+static void	free_all(t_stk *a, t_stk *b)
 {
-	if (A->stk)
-		free(A->stk);
-	if (A->rank)
-		free(A->rank);
-	if (B->stk)
-		free(B->stk);
-	if (B->rank)
-		free(B->rank);
+	if (a->stk)
+		free(a->stk);
+	if (a->rank)
+		free(a->rank);
+	if (b->stk)
+		free(b->stk);
+	if (b->rank)
+		free(b->rank);
 }
 
-int	prepare(int argc, char **argv, t_stk *A, t_stk *B)
+int	prepare(int argc, char **argv, t_stk *a, t_stk *b)
 {
-	A->stk = get_stkA(argc, argv);
-	B->stk = (int *)malloc(sizeof(int) * (argc - 1));
-	if (!A->stk || !B->stk)
+	a->stk = get_stka(argc, argv);
+	b->stk = (int *)malloc(sizeof(int) * (argc - 1));
+	if (!a->stk || !b->stk)
 	{
-		free_all(A, B);
+		free_all(a, b);
 		write(2, "Error\n", 6);
 		return (-1);
 	}
-	A->len = argc - 1;
-	B->len = 0;
-	A->rank = NULL;
-	B->rank = NULL;
-	get_sortstk_rank(A, argc);
-	B->rank = (int *)malloc(sizeof(int) * (argc - 1));
-	if (!A->rank || !B->rank)
+	a->len = argc - 1;
+	b->len = 0;
+	a->rank = NULL;
+	b->rank = NULL;
+	get_sortstk_rank(a, argc);
+	b->rank = (int *)malloc(sizeof(int) * (argc - 1));
+	if (!a->rank || !b->rank)
 	{
-		free_all(A, B);
+		free_all(a, b);
 		write(2, "Error\n", 6);
 		return (-1);
 	}
 	return (1);
 }
+
 int	main(int argc, char **argv)
 {
-	t_stk	A;
-	t_stk	B;
+	t_stk	a;
+	t_stk	b;
 	t_res	res;
 	int		pre;
 
 	if (argc <= 1)
 		return (0);
-	pre = prepare(argc, argv, &A, &B);
+	pre = prepare(argc, argv, &a, &b);
 	if (pre < 0)
 		return (-1);
 	res.place = 0;
 	ft_memset(res.result, 0, 8000);
 	res.min = 0;
 	res.max = argc - 2;
-	slice_sort(&A, &B, &res);
+	slice_sort(&a, &b, &res);
 	check_rrr(res.result);
 	put_res(res.result);
-	free_all(&A, &B);
+	free_all(&a, &b);
 	return (0);
 }

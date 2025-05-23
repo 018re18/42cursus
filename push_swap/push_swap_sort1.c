@@ -6,13 +6,13 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 19:33:55 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/22 19:52:38 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/23 12:37:25 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static int	*stkdup(int *stkA, int argc)
+static int	*stkdup(int *stka, int argc)
 {
 	int	*stkcpy;
 	int	i;
@@ -23,7 +23,7 @@ static int	*stkdup(int *stkA, int argc)
 	i = 0;
 	while (i < argc - 1)
 	{
-		stkcpy[i] = stkA[i];
+		stkcpy[i] = stka[i];
 		i++;
 	}
 	return (stkcpy);
@@ -71,13 +71,13 @@ void	ft_quick_sort(int *stk, int min, int max)
 	}
 }
 
-void	get_sortstk_rank(t_stk *A, int argc)
+void	get_sortstk_rank(t_stk *a, int argc)
 {
 	t_stk	cpy;
 
 	cpy.stk = NULL;
 	cpy.rank = NULL;
-	cpy.stk = stkdup(A->stk, argc);
+	cpy.stk = stkdup(a->stk, argc);
 	if (!cpy.stk)
 		return ;
 	ft_quick_sort(cpy.stk, 0, argc - 2);
@@ -86,6 +86,6 @@ void	get_sortstk_rank(t_stk *A, int argc)
 		free(cpy.stk);
 		return ;
 	}
-	sort_rank(&cpy, A, argc - 1);
+	sort_rank(&cpy, a, argc - 1);
 	free(cpy.stk);
 }

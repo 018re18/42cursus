@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:37:42 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/22 19:49:49 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/23 12:47:51 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,17 @@ static void	shift_op(int *res, int i, int op)
 	}
 }
 
-void	check_rrr(int *res)
+void	check_rrr(int *r)
 {
 	int	i;
-	int	j;
 
 	i = 0;
-	while (res[i])
+	while (r[i])
 	{
-		if (res[i] == 3 && res[i + 1] == 4 || res[i] == 4 && res[i + 1] == 3)
-			shift_op(res, i, 5);
-		else if (res[i] == 6 && res[i + 1] == 7 || res[i] == 7 && res[i
-			+ 1] == 6)
-			shift_op(res, i, 8);
+		if ((r[i] == 3 && r[i + 1] == 4) || (r[i] == 4 && r[i + 1] == 3))
+			shift_op(r, i, 5);
+		else if ((r[i] == 6 && r[i + 1] == 7) || (r[i] == 7 && r[i + 1] == 6))
+			shift_op(r, i, 8);
 		i++;
 	}
 }

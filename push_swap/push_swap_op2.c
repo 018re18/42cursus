@@ -6,75 +6,75 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 20:17:18 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/22 14:56:13 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/23 12:35:30 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int	ra(t_stk *A, int mode, t_res *res)
+int	ra(t_stk *a, int mode, t_res *res)
 {
 	int	tmp;
 	int	i;
 
-	if (A->len < 2)
+	if (a->len < 2)
 		return (0);
-	tmp = A->stk[0];
+	tmp = a->stk[0];
 	i = 0;
-	while (i < A->len - 1)
+	while (i < a->len - 1)
 	{
-		A->stk[i] = A->stk[i + 1];
+		a->stk[i] = a->stk[i + 1];
 		i++;
 	}
-	A->stk[i] = tmp;
-	tmp = A->rank[0];
+	a->stk[i] = tmp;
+	tmp = a->rank[0];
 	i = 0;
-	while (i < A->len - 1)
+	while (i < a->len - 1)
 	{
-		A->rank[i] = A->rank[i + 1];
+		a->rank[i] = a->rank[i + 1];
 		i++;
 	}
-	A->rank[i] = tmp;
+	a->rank[i] = tmp;
 	if (mode == 1)
 		res->result[res->place] = 3;
 	return (1);
 }
 
-int	rb(t_stk *B, int mode, t_res *res)
+int	rb(t_stk *b, int mode, t_res *res)
 {
 	int	tmp;
 	int	i;
 
-	if (B->len < 2)
+	if (b->len < 2)
 		return (0);
-	tmp = B->stk[0];
+	tmp = b->stk[0];
 	i = 0;
-	while (i < B->len - 1)
+	while (i < b->len - 1)
 	{
-		B->stk[i] = B->stk[i + 1];
+		b->stk[i] = b->stk[i + 1];
 		i++;
 	}
-	B->stk[i] = tmp;
-	tmp = B->rank[0];
+	b->stk[i] = tmp;
+	tmp = b->rank[0];
 	i = 0;
-	while (i < B->len - 1)
+	while (i < b->len - 1)
 	{
-		B->rank[i] = B->rank[i + 1];
+		b->rank[i] = b->rank[i + 1];
 		i++;
 	}
-	B->rank[i] = tmp;
+	b->rank[i] = tmp;
 	if (mode == 1)
 		res->result[res->place] = 4;
 	return (1);
 }
 
-int	rr(t_stk *A, t_stk *B, t_res *res)
+int	rr(t_stk *a, t_stk *b, t_res *res)
 {
 	int	i;
 	int	j;
 
-	i = ra(A, 0, res);
-	j = rb(B, 0, res);
+	i = ra(a, 0, res);
+	j = rb(b, 0, res);
 	res->result[res->place] = 5;
 	return (1);
 }
