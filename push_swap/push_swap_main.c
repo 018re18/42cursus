@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:04:16 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/23 13:38:41 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/23 17:50:20 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,24 @@ int	prepare(int argc, char **argv, t_stk *a, t_stk *b)
 	return (1);
 }
 
+static int	sorted(t_stk *a)
+{
+	int	i;
+	int	tmp1;
+	int	tmp2;
+
+	i = 0;
+	while (i < a->len - 1)
+	{
+		tmp1 = a->rank[i];
+		tmp2 = a->rank[i + 1];
+		if (tmp1 + 1 != tmp2)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_stk	a;
@@ -74,13 +92,16 @@ int	main(int argc, char **argv)
 	pre = prepare(argc, argv, &a, &b);
 	if (pre < 0)
 		return (-1);
-	res.place = 0;
-	ft_memset(res.result, 0, 8000);
-	res.min = 0;
-	res.max = argc - 2;
-	slice_sort(&a, &b, &res);
-	check_rrr(res.result);
-	put_res(res.result);
+	if (sorted(&a))
+	{
+		res.place = 0;
+		ft_memset(res.result, 0, 8000);
+		res.min = 0;
+		res.max = argc - 2;
+		slice_sort(&a, &b, &res);
+		check_rrr(res.result);
+		put_res(res.result);
+	}
 	free_all(&a, &b);
 	return (0);
 }
