@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:04:16 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/23 13:26:58 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/23 13:38:41 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ static void	free_all(t_stk *a, t_stk *b)
 
 int	prepare(int argc, char **argv, t_stk *a, t_stk *b)
 {
+	a->rank = NULL;
+	b->rank = NULL;
 	a->stk = get_stka(argc, argv);
 	b->stk = (int *)malloc(sizeof(int) * (argc - 1));
 	if (!a->stk || !b->stk)
@@ -49,8 +51,6 @@ int	prepare(int argc, char **argv, t_stk *a, t_stk *b)
 	}
 	a->len = argc - 1;
 	b->len = 0;
-	a->rank = NULL;
-	b->rank = NULL;
 	get_sortstk_rank(a, argc);
 	b->rank = (int *)malloc(sizeof(int) * (argc - 1));
 	if (!a->rank || !b->rank)
