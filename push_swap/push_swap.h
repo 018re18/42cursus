@@ -6,14 +6,13 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:02:44 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/23 17:35:22 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/23 18:42:19 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
 
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 
