@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 12:16:31 by rookuma           #+#    #+#             */
-/*   Updated: 2025/05/23 13:22:08 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/05/26 18:50:00 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,13 +85,24 @@ static void	mv_a_to_b(t_stk *a, t_stk *b, t_cnk *cnk, t_res *res)
 void	sort_a_to_b(t_stk *a, t_stk *b, t_cnk *cnk, t_res *res)
 {
 	int	n_cnk;
+	int	off;
 
 	n_cnk = 0;
+	off = 0;
+	if (cnk->size == 25 && cnk->num == 4)
+		cnk->num = 6;
 	while (n_cnk < cnk->num)
 	{
-		cnk->min = cnk->size * n_cnk;
-		cnk->max = cnk->size * (n_cnk + 1) - 1;
+		if (n_cnk < 2 && cnk->size == 25)
+			cnk->size = 25;
+		else if (n_cnk < 3 && cnk->size == 25)
+			cnk->size = 20;
+		else if (n_cnk < 6 && cnk->size == 20)
+			cnk->size = 10;
+		cnk->min = off;
+		cnk->max = off + cnk->size - 1;
 		mv_a_to_b(a, b, cnk, res);
+		off += cnk->size;
 		n_cnk++;
 	}
 }
