@@ -16,10 +16,10 @@
 # include "get_next_line.h"
 # include <dirent.h>
 # include <fcntl.h>
+# include <stdio.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <unistd.h>
@@ -136,9 +136,9 @@ int						execve_main(t_token *line, t_envp_data *my_envp,
 							int exit_status);
 // char					*make_here_doc(t_cmd_cnk *operate, int place);
 int						ft_strcmp(const char *s1, const char *s2);
-t_cmd_cnk				*make_cmd_cnk(t_token *line, int operate_count);
-char					*make_here_doc(t_cmd_cnk *operate, int place,
-							int redir_place);
+t_cmd_cnk				*make_cmd_cnk(t_token *line, int operate_count,int *status);
+int					make_here_doc(t_cmd_cnk *operate, int place,
+							int redir_place,int *status);
 char					**split_kai(char *string, char **splited_pipe);
 char					*quort_check(char *string);
 int						count_token(char *string);

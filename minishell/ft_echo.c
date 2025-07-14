@@ -43,12 +43,12 @@ int	ft_echo(char **cmd_and_option)
 	n_flag = check_option_n(cmd_and_option, argc, &i);
 	while (i < argc)
 	{
-		printf("%s", cmd_and_option[i]);
+		write(1,cmd_and_option[i],ft_strlen(cmd_and_option[i]));
 		if (i < argc - 1)
-			printf(" ");
+			write(1," ",1);
 		i++;
 	}
 	if (n_flag == 0)
-		printf("\n");
+		write(1,"\n",1);
 	return (0);
 }

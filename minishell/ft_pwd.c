@@ -14,9 +14,11 @@
 
 int	ft_pwd(t_envp_data *envp_data)
 {
-	char *string = ft_doller("$PWD", *envp_data);
-	printf("%s", string);
-	printf("\n");
+	char *string;
+
+	string = ft_doller("$PWD", *envp_data);
+	write(1,string,ft_strlen(string));
+	write(1,"\n",1);
 	free(string);
 	return (0);
 }

@@ -101,97 +101,117 @@ int	operate_init(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i)
 	return (TRUE);
 }
 
-int	cnk_cmd(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i)
+int	cnk_cmd(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i,int *status)
 {
 	operate[i->op_index].cmd[i->cmd_index] = ft_strdup(line[i->line_index].str);
 	if (!operate[i->op_index].cmd[i->cmd_index])
+	{
+		*status=1;
 		return (FALSE);
+	}
 	i->cmd_index++;
 	return (TRUE);
 }
 
-int	cnk_input(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i)
+int	cnk_input(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i,int *status)
 {
 	operate[i->op_index].redir[i->redir_index].type = input;
 	i->line_index++;
 	operate[i->op_index].redir[i->redir_index].filename = ft_strdup(line[i->line_index].str);
 	if (!operate[i->op_index].redir[i->redir_index].filename)
+	{
+		*status=1;
 		return (FALSE);
+	}
 	operate[i->op_index].redirect++;
 	i->redir_index++;
 	return (TRUE);
 }
 
-int	cnk_output(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i)
+int	cnk_output(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i,int *status)
 {
 	operate[i->op_index].redir[i->redir_index].type = output;
 	i->line_index++;
 	operate[i->op_index].redir[i->redir_index].filename = ft_strdup(line[i->line_index].str);
 	if (!operate[i->op_index].redir[i->redir_index].filename)
+	{
+		*status=1;
 		return (FALSE);
+	}
 	operate[i->op_index].redirect++;
 	i->redir_index++;
 	return (TRUE);
 }
 
-int	cnk_append(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i)
+int	cnk_append(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i,int *status)
 {
 	operate[i->op_index].redir[i->redir_index].type = add;
 	i->line_index++;
 	operate[i->op_index].redir[i->redir_index].filename = ft_strdup(line[i->line_index].str);
 	if (!operate[i->op_index].redir[i->redir_index].filename)
+	{
+		*status=1;
 		return (FALSE);
+	}
 	operate[i->op_index].redirect++;
 	i->redir_index++;
 	return (TRUE);
 }
 
-int	cnk_here_doc(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i)
+int	cnk_here_doc(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i,int *status)
 {
 	operate[i->op_index].redir[i->redir_index].type = heredoc;
 	i->line_index++;
 	operate[i->op_index].redir[i->redir_index].limiter = ft_strdup(line[i->line_index].str);
 	if (!operate[i->op_index].redir[i->redir_index].limiter)
+	{
+		*status=1;
 		return (FALSE);
-	operate[i->op_index].redir[i->redir_index].filename = make_here_doc(operate,
-			i->heredoc_num, i->redir_index);
-	if (!operate[i->op_index].redir[i->redir_index].filename)
-		return (FALSE);
+	}
+	if(!make_here_doc(operate,i->heredoc_num, i->redir_index,status))
+		return FALSE;
 	operate[i->op_index].redirect++;
 	i->heredoc_num++;
 	i->redir_index++;
 	return (TRUE);
 }
 
-int	process_cmd_cnk(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i)
+int	process_cmd_cnk(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i,int *status)
 {
 	if (line[i->line_index].type == cmd)
-		return (cnk_cmd(line, operate, i));
+		return (cnk_cmd(line, operate, i,status));
 	else if (line[i->line_index].type == input)
-		return (cnk_input(line, operate, i));
+		return (cnk_input(line, operate, i,status));
 	else if (line[i->line_index].type == output)
-		return (cnk_output(line, operate, i));
+		return (cnk_output(line, operate, i,status));
 	else if (line[i->line_index].type == add)
-		return (cnk_append(line, operate, i));
+		return (cnk_append(line, operate, i,status));
 	else if (line[i->line_index].type == heredoc)
-		return (cnk_here_doc(line, operate, i));
+		return (cnk_here_doc(line, operate, i,status));
 	else
 		return (TRUE);
 }
 
-int	split_cmd_cnk(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i)
+int	split_cmd_cnk(t_token *line, t_cmd_cnk *operate, t_make_cnk_index *i,int *status)
 {
 	while (line[i->line_index].str != NULL
 		&& line[i->line_index].type != pipe_status)
 	{
-		if (!process_cmd_cnk(line, operate, i))
-			return (FALSE);
+	if(!process_cmd_cnk(line, operate, i,status))
+			return FALSE;
 		i->line_index++;
 	}
 	return (TRUE);
 }
 
-t_cmd_cnk	*make_cmd_cnk(t_token *line, int operate_count)
+t_cmd_cnk *error_cnk_init( t_cmd_cnk *operate,int *status)
+{
+	free(operate);
+	*status=1;
+	return (NULL);
+}
+
+t_cmd_cnk	*make_cmd_cnk(t_token *line, int operate_count,int *status)
 {
 	t_make_cnk_index	i;
 	t_cmd_cnk			*operate;
@@ -203,12 +223,9 @@ t_cmd_cnk	*make_cmd_cnk(t_token *line, int operate_count)
 	while (line[i.line_index].str != NULL)
 	{
 		if (!operate_init(line, operate, &i))
-		{
-			free(operate);
-			return (NULL);
-		}
+			return error_cnk_init(operate,status);
 		i.cmd_index = 0;
-		if (!split_cmd_cnk(line, operate, &i))
+		if (!split_cmd_cnk(line, operate, &i,status))
 		{
 			free_operate(operate, i.op_index + 1);
 			return (NULL);

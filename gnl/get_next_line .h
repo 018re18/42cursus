@@ -20,6 +20,19 @@
 #  define BUFFER_SIZE 42
 # endif
 
+enum
+{
+	FALSE,
+	TRUE
+};
+
+enum
+{
+	str_len,
+	stop_n,
+	check_n
+};
+
 typedef struct s_gnl
 {
 	char	*str;
@@ -29,7 +42,7 @@ typedef struct s_gnl
 
 typedef struct s_line
 {
-	size_t	ln_len;
+	size_t	line_len;
 	size_t	str_len;
 	char	*line;
 }			t_line;
@@ -42,9 +55,9 @@ typedef struct s_join
 }			t_join;
 
 char		*get_next_line(int fd);
-size_t		ft_strlen_c_n(char *s, int num);
+size_t		ft_muluti_func_strlen(char *s, int num);
 char		*ft_strjoin_free(char *s1, char *s2);
-char		*rd_1t(int fd, int *remain);
-char		*rtn_line(char *str, int num);
+char		*read_1time(int fd, int *remain);
+char		*return_line(char *str, int num);
 
 #endif

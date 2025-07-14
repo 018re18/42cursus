@@ -12,6 +12,7 @@
 
 #include "get_next_line.h"
 
+//配列strのplaceの位置からlenぶん切り出して返す
 static char	*get_line(char *str, size_t place, size_t len)
 {
 	size_t	i;
@@ -30,28 +31,31 @@ static char	*get_line(char *str, size_t place, size_t len)
 	return (line);
 }
 
-char	*rtn_line(char *str, int num)
+//numが0の時、配列strから改行までを切りでして返す
+//numが0以外の時、改行以降の残り部分を返す
+char	*return_line(char *str, int num)
 {
 	t_line	ln;
 
 	if (!str || str[0] == '\0')
 		return (NULL);
-	ln.ln_len = ft_strlen_c_n(str, 1);
-	ln.str_len = ft_strlen_c_n(str, 0);
-	if (ln.ln_len == 0 && num == 0)
+	ln.line_len = ft_muluti_func_strlen(str, stop_n);
+	ln.str_len = ft_muluti_func_strlen(str, str_len);
+	if (ln.line_len == 0 && num == 0)
 		return (NULL);
 	if (num == 0)
-		ln.line = get_line(str, 0, ln.ln_len);
+		ln.line = get_line(str, 0, ln.line_len);
 	else
 	{
-		if (ln.str_len <= ln.ln_len)
+		if (ln.str_len <= ln.line_len)
 			return (NULL);
-		ln.line = get_line(str, ln.ln_len, ln.str_len - ln.ln_len);
+		ln.line = get_line(str, ln.line_len, ln.str_len - ln.line_len);
 	}
 	return (ln.line);
 }
 
-static int	check(int fd, t_gnl *gnl, char **save_l)
+//static変数で保持されている文字列をセットして初期化などする
+static int	check_save(int fd, t_gnl *gnl, char **save_l)
 {
 	if (fd < 0 || BUFFER_SIZE <= 0)
 	{
@@ -72,14 +76,15 @@ static int	check(int fd, t_gnl *gnl, char **save_l)
 	return (1);
 }
 
+//fdのファイルから改行orEOFまでの文字列を返す
 static char	*get_str(int fd, char *str)
 {
 	int		remain;
 	char	*rd_1;
 
-	while (!str || ft_strlen_c_n(str, 2))
+	while (!str || !ft_muluti_func_strlen(str, check_n))
 	{
-		rd_1 = rd_1t(fd, &remain);
+		rd_1 = read_1time(fd, &remain);
 		if (!rd_1)
 		{
 			if (remain == -1)
@@ -98,12 +103,13 @@ static char	*get_str(int fd, char *str)
 	return (str);
 }
 
+//呼び出されるたびにfdのファイルから1行を返す
 char	*get_next_line(int fd)
 {
 	t_gnl		gnl;
 	static char	*save_l;
 
-	if (!check(fd, &gnl, &save_l))
+	if (!check_save(fd, &gnl, &save_l))
 		return (NULL);
 	gnl.str = get_str(fd, gnl.str);
 	if (!gnl.str || gnl.str[0] == '\0')
@@ -111,8 +117,8 @@ char	*get_next_line(int fd)
 		free(gnl.str);
 		return (NULL);
 	}
-	gnl.line = rtn_line(gnl.str, 0);
-	gnl.tmp = rtn_line(gnl.str, 1);
+	gnl.line = return_line(gnl.str, 0);
+	gnl.tmp = return_line(gnl.str, 1);
 	free(gnl.str);
 	if (!gnl.line)
 	{
@@ -130,7 +136,6 @@ char	*get_next_line(int fd)
 // {
 // 	int		fd;
 // 	char	*line;
-
 // 	fd = open("sample.txt", O_RDONLY);
 // 	if (fd == -1)
 // 	{
@@ -145,3 +150,4 @@ char	*get_next_line(int fd)
 // 	close(fd);
 // 	return (0);
 // }
+//このmainだとsample.txtのファイルにある文を全て抽出できる

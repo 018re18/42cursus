@@ -33,7 +33,10 @@ t_envp_data	ft_env(t_envp_data envp_data, t_execve_num *num, char **cmd)
 	{
 		key = set_key(envp_data.envp[i]);
 		if (envp_data.envp[i][ft_strlen(key)] == '=')
-			printf("%s\n", envp_data.envp[i]);
+		{
+			write(1,envp_data.envp[i],ft_strlen(envp_data.envp[i]));
+			write(1,"\n",1);
+		}
 		free(key);
 		i++;
 	}

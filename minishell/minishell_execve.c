@@ -30,11 +30,11 @@ int	count_all_cmd(t_token *line)
 	return (count);
 }
 
-int	make_operate(t_token *line, t_cmd_cnk **operate, int operate_count)
+int	make_operate(t_token *line, t_cmd_cnk **operate, int operate_count,int *status)
 {
 	int	i;
 
-	*operate = make_cmd_cnk(line, operate_count);
+	*operate = make_cmd_cnk(line, operate_count,status);
 	i = 0;
 	while (line[i].str)
 	{
@@ -43,7 +43,9 @@ int	make_operate(t_token *line, t_cmd_cnk **operate, int operate_count)
 	}
 	free(line);
 	if (!*operate)
+	{
 		return (FALSE);
+	}
 	return (TRUE);
 }
 
@@ -79,6 +81,7 @@ void	free_operate_redir(t_cmd_cnk *operate, int i)
 	}
 	free(operate[i].redir);
 }
+
 void	free_operate(t_cmd_cnk *operate, int operate_count)
 {
 	int	i;
@@ -765,6 +768,7 @@ int	execve_main(t_token *line, t_envp_data *my_envp, int exit_status)
 	t_execve_num	num;
 	t_cmd_cnk		*operate;
 	int				result;
+	int status;
 
 	num.exit_status = exit_status;
 	sigaction(SIGINT, NULL, &num.saved);
@@ -774,6 +778,7 @@ int	execve_main(t_token *line, t_envp_data *my_envp, int exit_status)
 	num.g_sa.sa_flags = 0;
 	sigaction(SIGINT, &num.g_sa, NULL);
 	sigaction(SIGQUIT, &num.g_sa, NULL);
+	status=0;
 	num.operate_count = count_all_cmd(line);
 	if (num.operate_count == 0)
 	{
@@ -782,11 +787,11 @@ int	execve_main(t_token *line, t_envp_data *my_envp, int exit_status)
 		sigaction(SIGQUIT, &num.saved_quit, NULL);
 		return (127);
 	}
-	if (!make_operate(line, &operate, num.operate_count))
+	if (!make_operate(line, &operate, num.operate_count,&status))
 	{
 		sigaction(SIGINT, &num.saved, NULL);
 		sigaction(SIGQUIT, &num.saved_quit, NULL);
-		return (1);
+		return (status);
 	}
 	if (num.operate_count == 1)
 		result = execve_cmd_single(my_envp, operate, &num);

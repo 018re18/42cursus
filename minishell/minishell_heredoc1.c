@@ -63,13 +63,13 @@ int	open_here_doc(char *filename)
 void	write_heredoc_error(t_cmd_cnk *operate, int place, int redir_place,
 		int len)
 {
-	write(2, "bash: warning: here-document delimited by end-of-file (wanted `",
-		63);
+	write(2, "minishell: warning: here-document delimited by end-of-file (wanted `",
+		68);
 	write(2, operate[place].redir[redir_place].limiter, len);
 	write(2, "')\n", 3);
 }
 
-void	here_doc_loop(t_cmd_cnk *operate, int place, int redir_place, int fd)
+int	here_doc_loop(t_cmd_cnk *operate, int place, int redir_place, int fd)
 {
 	char	*str;
 	int		len;
@@ -77,8 +77,26 @@ void	here_doc_loop(t_cmd_cnk *operate, int place, int redir_place, int fd)
 	len = ft_strlen(operate[place].redir[redir_place].limiter);
 	while (1)
 	{
+		if (g_received_signal == SIGINT)
+		{
+			g_received_signal = 0;
+			unlink(operate[place].redir[redir_place].filename);
+			return (130);
+		}
 		write(1, "> ", 2);
+		if (g_received_signal == SIGINT)
+		{
+			g_received_signal = 0;
+			unlink(operate[place].redir[redir_place].filename);
+			return (130);
+		}
 		str = get_next_line(0);
+		if (g_received_signal == SIGINT)
+		{
+			g_received_signal = 0;
+			unlink(operate[place].redir[redir_place].filename);
+			return (130);
+		}
 		if (!str)
 		{
 			write_heredoc_error(operate, place, redir_place, len);
@@ -95,9 +113,10 @@ void	here_doc_loop(t_cmd_cnk *operate, int place, int redir_place, int fd)
 		write(fd, "\n", 1);
 		free(str);
 	}
+	return 0;
 }
 
-char	*make_here_doc(t_cmd_cnk *operate, int place, int redir_place)
+int	make_here_doc(t_cmd_cnk *operate, int place, int redir_place,int *status)
 {
 	char				*filename;
 	int					fd;
@@ -109,7 +128,7 @@ char	*make_here_doc(t_cmd_cnk *operate, int place, int redir_place)
 	sigaction(SIGQUIT, NULL, &saved_quit);
 	g_sa.sa_handler = ctr_c_here_doc_handler;
 	sigemptyset(&g_sa.sa_mask);
-	g_sa.sa_flags = SA_RESTART;
+	g_sa.sa_flags = 0;
 	sigaction(SIGINT, &g_sa, NULL);
 	g_sa.sa_handler = SIG_IGN;
 	sigemptyset(&g_sa.sa_mask);
@@ -117,12 +136,18 @@ char	*make_here_doc(t_cmd_cnk *operate, int place, int redir_place)
 	sigaction(SIGQUIT, &g_sa, NULL);
 	filename = make_here_doc_filename(place);
 	if (!filename)
-		return (NULL);
+	{
+		*status=1;
+		return FALSE;
+	}
+	operate[place].redir[redir_place].filename=filename;
 	fd = open_here_doc(filename);
-	here_doc_loop(operate, place, redir_place, fd);
+	*status=here_doc_loop(operate, place, redir_place, fd);
 	close(fd);
-	g_received_signal = 0;
+	g_received_signal=0;
+	if(*status==130)
+		return FALSE;
 	sigaction(SIGINT, &saved_int, NULL);
 	sigaction(SIGQUIT, &saved_quit, NULL);
-	return (filename);
+	return (TRUE);
 }

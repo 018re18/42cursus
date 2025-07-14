@@ -113,7 +113,7 @@ int	ft_exit(t_cmd_cnk *operate, int place, t_execve_num *num,
 
 	argc = count_arg(operate[place].cmd);
 	if (num->operate_count == 1)
-		printf("exit\n");
+		write(1,"exit\n",5);
 	if (argc == 1)
 	{
 		if (num->operate_count == 1)

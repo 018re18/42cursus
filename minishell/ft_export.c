@@ -84,8 +84,13 @@ int	ft_export(char **args, t_envp_data *envp_data)
 			if (ft_strncmp(envp_data->envp[i], "_=", 2) != 0)
 			{
 				key = set_key(envp_data->envp[i]);
-				printf("declare -x %s=\"", key);
-				printf("%s\"\n", &envp_data->envp[i][ft_strlen(key) + 1]);
+				write(1,"declare -x ",11);
+				write(1,key,ft_strlen(key));
+				write(1,"=\"",2);
+				write(1,envp_data->envp[i][ft_strlen(key) + 1],ft_strlen(envp_data->envp[i][ft_strlen(key) + 1]));
+				write(1,"\"\n",2);
+				//printf("declare -x %s=\"", key);
+				//printf("%s\"\n", &envp_data->envp[i][ft_strlen(key) + 1]);
 				free(key);
 			}
 			i++;

@@ -11,10 +11,12 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
+// ヘッダーの前かどこかにこれを追加
+void rl_replace_line(const char *text, int clear_undo);
 #include <signal.h>
-#include <stdio.h>
 #include <unistd.h>
 
 // struct sigaction	sa_int;
@@ -252,7 +254,11 @@ int	main(int argc, char **argv, char **envp)
 		}
 		// envp_data = envp_init(envp);
 		exit_status = execve_main(token_and_status, &envp_data, exit_status);
-		i = 0;
+		if(exit_status==130)
+		{
+			free(line);
+			continue ;
+		}
 		
 		// if (token_and_status)
 		// {
