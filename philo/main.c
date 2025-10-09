@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:50:06 by rookuma           #+#    #+#             */
-/*   Updated: 2025/08/30 18:00:13 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/09/06 14:41:33 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,17 @@ t_philo	*init_philos(t_setting_time *tm, t_information *info)
 
 int	process_for_one(t_setting_time *tm)
 {
+	char	*finish_time;
+
+	write(1, "0 1 has taken a fork\n", 21);
+	usleep(tm->time_die * 1000);
+	finish_time = ft_itoa_long(tm->time_die);
+	if (!finish_time)
+		return (1);
+	write(1, finish_time, ft_strlen(finish_time));
+	free(finish_time);
+	write(1, " 1 died\n", 8);
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -129,7 +140,6 @@ int	main(int argc, char **argv)
 
 	if (!setting_time(argc, argv, &tm))
 		return (write_error("error setting time"));
-	//一人の時用の例外処理つくる
 	if (tm.num_philo == 1)
 		return (process_for_one(&tm));
 	if (!init_info(&tm, &info))

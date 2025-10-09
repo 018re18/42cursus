@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:39:28 by rookuma           #+#    #+#             */
-/*   Updated: 2025/08/30 17:00:57 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/09/06 14:22:02 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ int	ft_strlen(char *s)
 	return (i);
 }
 
-int ft_atoi_philo(char *str)
+int	ft_atoi_philo(char *str)
 {
-	int i;
-	long num;
+	int		i;
+	long	num;
 
 	if (!str)
 		return (-1);
@@ -84,4 +84,39 @@ long	ft_atoi_long(char *str)
 		i++;
 	}
 	return (num);
+}
+
+int	count_digit(long tmp)
+{
+	int	len;
+
+	len = 1;
+	while (tmp / 10)
+	{
+		len++;
+		tmp /= 10;
+	}
+	return (len);
+}
+
+char	*ft_itoa_long(long num)
+{
+	int		len;
+	char	*les;
+	long	tmp;
+
+	tmp = num;
+	if (tmp < 0)
+		return (NULL);
+	len = count_digit(tmp);
+	les = (char *)malloc(sizeof(char) * (len + 1));
+	if (!les)
+		return (NULL);
+	les[len] = '\0';
+	while (len-- > 0)
+	{
+		les[len] = tmp % 10 + '0';
+		tmp = tmp / 10;
+	}
+	return (les);
 }

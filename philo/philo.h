@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:49:45 by rookuma           #+#    #+#             */
-/*   Updated: 2025/08/30 17:52:21 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/09/06 14:21:58 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 # include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <unistd.h>
 # include <sys/time.h>
+# include <unistd.h>
 
 enum
 {
@@ -67,5 +67,6 @@ int					write_error(char *message);
 int					ft_strlen(char *str);
 long				ft_atoi_long(char *str);
 int					ft_atoi_philo(char *str);
+char				*ft_itoa_long(long num);
 
 #endif
