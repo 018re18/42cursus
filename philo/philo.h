@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:49:45 by rookuma           #+#    #+#             */
-/*   Updated: 2025/09/06 14:21:58 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/10/20 17:07:16 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,9 @@ typedef struct s_philo
 {
 	int				philo_id;
 	pthread_t		th_id;
-	pthread_mutex_t last_eat_ctrl;
+	pthread_mutex_t	last_eat_ctrl;
 	long			last_eat_time;
-	pthread_mutex_t eat_times_ctrl;
+	pthread_mutex_t	eat_times_ctrl;
 	int				num_eat_times;
 	pthread_mutex_t	*fork_r;
 	pthread_mutex_t	*fork_l;

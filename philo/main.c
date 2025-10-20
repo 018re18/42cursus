@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:50:06 by rookuma           #+#    #+#             */
-/*   Updated: 2025/09/06 14:41:33 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/10/20 17:07:19 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,8 @@ void	destroy_philos_mutex(t_philo *philos, int count)
 	}
 }
 
-void	destroy_all_mutex(t_philo *philos, t_setting_time *time, t_information *info)
+void	destroy_all_mutex(t_philo *philos, t_setting_time *time,
+		t_information *info)
 {
 	destroy_philos_mutex(philos, time->num_philo);
 	destroy_info_mutex(time, info);

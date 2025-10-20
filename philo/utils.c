@@ -6,7 +6,7 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:39:28 by rookuma           #+#    #+#             */
-/*   Updated: 2025/09/06 14:22:02 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/10/20 17:07:14 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,10 +121,10 @@ char	*ft_itoa_long(long num)
 	return (les);
 }
 
-void ft_usleep(long time)
+void	ft_usleep(long time)
 {
-	long start_time;
-	long now_time;
+	long	start_time;
+	long	now_time;
 
 	start_time = get_time();
 	while (1)
@@ -136,22 +136,22 @@ void ft_usleep(long time)
 	}
 }
 
-long get_time(void)
+long	get_time(void)
 {
-    struct timeval	tv;
-    long			time;
+	struct timeval	tv;
+	long			time;
 
-    gettimeofday(&tv, NULL);
-    time = tv.tv_sec * 1000 + tv.tv_usec / 1000;
-    return (time);
+	gettimeofday(&tv, NULL);
+	time = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+	return (time);
 }
 
-void print_status(t_philo *philo, int mode)
+void	print_status(t_philo *philo, int mode)
 {
 	long	now_time;
 
 	pthread_mutex_lock(&philo->info->finish_ctrl);
-	if( philo->info->finish_flag == Finished)
+	if (philo->info->finish_flag == Finished)
 	{
 		pthread_mutex_unlock(&philo->info->finish_ctrl);
 		return ;
