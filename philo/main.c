@@ -12,20 +12,20 @@
 
 #include "philo.h"
 
-int	setting_time(int argc, char **argv, t_setting_time *tm)
+int	setting_time(int argc, char **argv, t_setting_time *time)
 {
 	if (!(argc == 5 || argc == 6))
 		return (FALSE);
-	tm->num_philo = ft_atoi_philo(argv[1]);
-	tm->time_die = ft_atoi_long(argv[2]);
-	tm->time_eat = ft_atoi_long(argv[3]);
-	tm->time_sleep = ft_atoi_long(argv[4]);
+	time->num_philo = ft_atoi_philo(argv[1]);
+	time->time_die = ft_atoi_long(argv[2]);
+	time->time_eat = ft_atoi_long(argv[3]);
+	time->time_sleep = ft_atoi_long(argv[4]);
 	if (argc == 6)
-		tm->num_must_eat = ft_atoi_long(argv[5]);
+		time->num_must_eat = ft_atoi_long(argv[5]);
 	else
-		tm->num_must_eat = -1;
-	if (tm->num_philo <= 0 || tm->time_die <= 0 || tm->time_eat <= 0
-		|| tm->time_sleep <= 0 || (argc == 6 && tm->num_must_eat <= 0))
+		time->num_must_eat = -1;
+	if (time->num_philo <= 0 || time->time_die <= 0 || time->time_eat <= 0
+		|| time->time_sleep <= 0 || (argc == 6 && time->num_must_eat <= 0))
 		return (FALSE);
 	return (TRUE);
 }
@@ -63,19 +63,19 @@ int	make_forks(t_information *info, int count)
 	return (TRUE);
 }
 
-int	init_info(t_setting_time *tm, t_information *info)
+int	init_info(t_setting_time *time, t_information *info)
 {
-	info->time = tm;
-	if (!make_forks(info, tm->num_philo))
+	info->time = time;
+	if (!make_forks(info, time->num_philo))
 		return (FALSE);
 	if (pthread_mutex_init(&info->print_ctrl, NULL) != 0)
 	{
-		destroy_forks(info->forks, tm->num_philo);
+		destroy_forks(info->forks, time->num_philo);
 		return (FALSE);
 	}
 	if (pthread_mutex_init(&info->finish_ctrl, NULL) != 0)
 	{
-		destroy_forks(info->forks, tm->num_philo);
+		destroy_forks(info->forks, time->num_philo);
 		pthread_mutex_destroy(&info->print_ctrl);
 		return (FALSE);
 	}
@@ -83,11 +83,30 @@ int	init_info(t_setting_time *tm, t_information *info)
 	return (TRUE);
 }
 
-void	destroy_all_mutex(t_setting_time *tm, t_information *info)
+void	destroy_info_mutex(t_setting_time *time, t_information *info)
 {
-	destroy_forks(info->forks, tm->num_philo);
+	destroy_forks(info->forks, time->num_philo);
 	pthread_mutex_destroy(&info->print_ctrl);
 	pthread_mutex_destroy(&info->finish_ctrl);
+}
+
+void	destroy_philos_mutex(t_philo *philos, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+	{
+		pthread_mutex_destroy(&philos[i].last_eat_ctrl);
+		pthread_mutex_destroy(&philos[i].eat_times_ctrl);
+		i++;
+	}
+}
+
+void	destroy_all_mutex(t_philo *philos, t_setting_time *time, t_information *info)
+{
+	destroy_philos_mutex(philos, time->num_philo);
+	destroy_info_mutex(time, info);
 }
 
 t_philo	*init_philos(t_setting_time *tm, t_information *info)
@@ -98,7 +117,7 @@ t_philo	*init_philos(t_setting_time *tm, t_information *info)
 	philos = (t_philo *)malloc(sizeof(t_philo) * tm->num_philo);
 	if (!philos)
 	{
-		destroy_all_mutex(tm, info);
+		destroy_info_mutex(tm, info);
 		return (NULL);
 	}
 	i = 0;
@@ -107,6 +126,9 @@ t_philo	*init_philos(t_setting_time *tm, t_information *info)
 		philos[i].info = info;
 		philos[i].philo_id = i + 1;
 		philos[i].num_eat_times = 0;
+		philos[i].last_eat_time = info->start_time;
+		pthread_mutex_init(&philos[i].last_eat_ctrl, NULL);
+		pthread_mutex_init(&philos[i].eat_times_ctrl, NULL);
 		philos[i].fork_r = &info->forks[i];
 		if (i == tm->num_philo - 1)
 			philos[i].fork_l = &info->forks[0];
@@ -122,7 +144,7 @@ int	process_for_one(t_setting_time *tm)
 	char	*finish_time;
 
 	write(1, "0 1 has taken a fork\n", 21);
-	usleep(tm->time_die * 1000);
+	ft_usleep(tm->time_die);
 	finish_time = ft_itoa_long(tm->time_die);
 	if (!finish_time)
 		return (1);
@@ -134,24 +156,35 @@ int	process_for_one(t_setting_time *tm)
 
 int	main(int argc, char **argv)
 {
-	t_setting_time	tm;
+	t_setting_time	time;
 	t_information	info;
 	t_philo			*philos;
+	int				i;
 
-	if (!setting_time(argc, argv, &tm))
+	if (!setting_time(argc, argv, &time))
 		return (write_error("error setting time"));
-	if (tm.num_philo == 1)
-		return (process_for_one(&tm));
-	if (!init_info(&tm, &info))
+	if (time.num_philo == 1)
+		return (process_for_one(&time));
+	if (!init_info(&time, &info))
 		return (write_error("error_init_info"));
-	philos = init_philos(&tm, &info);
+	info.start_time = get_time();
+	philos = init_philos(&time, &info);
 	if (!philos)
 		return (write_error("error_init_philos"));
-	// printf("%d\n", tm.num_philo);
-	// printf("%d\n", tm.time_die);
-	// printf("%d\n", tm.time_eat);
-	// printf("%d\n", tm.time_sleep);
-	// if (argc == 6)
-	// 	printf("%d\n", tm.num_must_eat);
+	i = 0;
+	while (i < time.num_philo)
+	{
+		pthread_create(&philos[i].th_id, NULL, philo_loop, &philos[i]);
+		i++;
+	}
+	watcher_philo(philos, &time, &info);
+	i = 0;
+	while (i < time.num_philo)
+	{
+		pthread_join(philos[i].th_id, NULL);
+		i++;
+	}
+	destroy_all_mutex(philos, &time, &info);
+	free(philos);
 	return (0);
 }

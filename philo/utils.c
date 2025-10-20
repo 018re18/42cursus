@@ -120,3 +120,52 @@ char	*ft_itoa_long(long num)
 	}
 	return (les);
 }
+
+void ft_usleep(long time)
+{
+	long start_time;
+	long now_time;
+
+	start_time = get_time();
+	while (1)
+	{
+		now_time = get_time();
+		if (now_time - start_time >= time)
+			break ;
+		usleep(100);
+	}
+}
+
+long get_time(void)
+{
+    struct timeval	tv;
+    long			time;
+
+    gettimeofday(&tv, NULL);
+    time = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+    return (time);
+}
+
+void print_status(t_philo *philo, int mode)
+{
+	long	now_time;
+
+	pthread_mutex_lock(&philo->info->finish_ctrl);
+	if( philo->info->finish_flag == Finished)
+	{
+		pthread_mutex_unlock(&philo->info->finish_ctrl);
+		return ;
+	}
+	pthread_mutex_unlock(&philo->info->finish_ctrl);
+	now_time = get_time() - philo->info->start_time;
+	pthread_mutex_lock(&philo->info->print_ctrl);
+	if (mode == Take_Fork)
+		printf("%ld %d has taken a fork\n", now_time, philo->philo_id);
+	else if (mode == Eat)
+		printf("%ld %d is eating\n", now_time, philo->philo_id);
+	else if (mode == Sleep)
+		printf("%ld %d is sleeping\n", now_time, philo->philo_id);
+	else if (mode == Think)
+		printf("%ld %d is thinking\n", now_time, philo->philo_id);
+	pthread_mutex_unlock(&philo->info->print_ctrl);
+}

@@ -31,6 +31,14 @@ enum
 	Finished
 };
 
+enum
+{
+	Take_Fork,
+	Eat,
+	Sleep,
+	Think
+};
+
 typedef struct s_setting_time
 {
 	int				num_philo;
@@ -55,7 +63,9 @@ typedef struct s_philo
 {
 	int				philo_id;
 	pthread_t		th_id;
+	pthread_mutex_t last_eat_ctrl;
 	long			last_eat_time;
+	pthread_mutex_t eat_times_ctrl;
 	int				num_eat_times;
 	pthread_mutex_t	*fork_r;
 	pthread_mutex_t	*fork_l;
@@ -68,5 +78,22 @@ int					ft_strlen(char *str);
 long				ft_atoi_long(char *str);
 int					ft_atoi_philo(char *str);
 char				*ft_itoa_long(long num);
+long				get_time(void);
+void				ft_usleep(long time);
+void				print_status(t_philo *philo, int mode);
+
+// state.c
+void				philo_eat(t_philo *philo);
+void				philo_sleep(t_philo *philo);
+void				philo_think(t_philo *philo);
+
+// loop.c
+void				*philo_loop(void *arg);
+
+// watcher.c
+int					check_death(t_philo *philos, t_setting_time *time);
+int					check_eat_times(t_philo *philos, t_setting_time *time);
+void				watcher_philo(t_philo *philos, t_setting_time *time,
+						t_information *info);
 
 #endif
