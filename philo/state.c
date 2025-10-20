@@ -16,10 +16,10 @@ void philo_eat(t_philo *philo)
         pthread_mutex_lock(philo->fork_r);
         print_status(philo, Take_Fork);
     }
+    print_status(philo, Eat);
     pthread_mutex_lock(&philo->last_eat_ctrl);
     philo->last_eat_time = get_time();
     pthread_mutex_unlock(&philo->last_eat_ctrl);
-    print_status(philo, Eat);
     ft_usleep(philo->info->time->time_eat);
     pthread_mutex_lock(&philo->eat_times_ctrl);
     philo->num_eat_times++;
