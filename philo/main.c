@@ -128,8 +128,21 @@ t_philo	*init_philos(t_setting_time *tm, t_information *info)
 		philos[i].philo_id = i + 1;
 		philos[i].num_eat_times = 0;
 		philos[i].last_eat_time = info->start_time;
-		pthread_mutex_init(&philos[i].last_eat_ctrl, NULL);
-		pthread_mutex_init(&philos[i].eat_times_ctrl, NULL);
+		if (pthread_mutex_init(&philos[i].last_eat_ctrl, NULL) != 0)
+		{
+			destroy_philos_mutex(philos, i);
+			destroy_info_mutex(tm, info);
+			free(philos);
+			return (NULL);
+		}
+		if (pthread_mutex_init(&philos[i].eat_times_ctrl, NULL) != 0)
+		{
+			pthread_mutex_destroy(&philos[i].last_eat_ctrl);
+			destroy_philos_mutex(philos, i);
+			destroy_info_mutex(tm, info);
+			free(philos);
+			return (NULL);
+		}
 		philos[i].fork_r = &info->forks[i];
 		if (i == tm->num_philo - 1)
 			philos[i].fork_l = &info->forks[0];
@@ -164,8 +177,6 @@ int	main(int argc, char **argv)
 
 	if (!setting_time(argc, argv, &time))
 		return (write_error("error setting time"));
-	if (time.num_philo == 1)
-		return (process_for_one(&time));
 	if (!init_info(&time, &info))
 		return (write_error("error_init_info"));
 	info.start_time = get_time();
@@ -175,7 +186,17 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (i < time.num_philo)
 	{
-		pthread_create(&philos[i].th_id, NULL, philo_loop, &philos[i]);
+		if(pthread_create(&philos[i].th_id, NULL, philo_loop, &philos[i])!=0)
+		{
+			pthread_mutex_lock(&info.finish_ctrl);
+			info.finish_flag = Finished;
+			pthread_mutex_unlock(&info.finish_ctrl);
+			while (--i >= 0)
+				pthread_join(philos[i].th_id, NULL);
+			destroy_all_mutex(philos, &time, &info);
+			free(philos);
+			return (write_error("error_pthread_create"));
+		}
 		i++;
 	}
 	watcher_philo(philos, &time, &info);

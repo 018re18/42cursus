@@ -14,7 +14,14 @@
 
 void	philo_eat(t_philo *philo)
 {
-	if (philo->philo_id % 2 == 0)
+	if (philo->philo_id == philo->info->time->num_philo)
+	{
+		pthread_mutex_lock(philo->fork_r);
+		print_status(philo, Take_Fork);
+		pthread_mutex_lock(philo->fork_l);
+		print_status(philo, Take_Fork);
+	}
+	else if (philo->philo_id % 2 == 0)
 	{
 		pthread_mutex_lock(philo->fork_r);
 		print_status(philo, Take_Fork);

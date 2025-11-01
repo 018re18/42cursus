@@ -17,8 +17,14 @@ void	*philo_loop(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	if (philo->philo_id % 2 == 0)
-		ft_usleep(1);
+	if (philo->info->time->num_philo == 1)
+	{
+		pthread_mutex_lock(philo->fork_r);
+		print_status(philo, Take_Fork);
+		ft_usleep(philo->info->time->time_die);
+		pthread_mutex_unlock(philo->fork_r);
+		return (NULL);
+	}
 	while (1)
 	{
 		pthread_mutex_lock(&philo->info->finish_ctrl);

@@ -14,7 +14,6 @@ NAME	= philo
 
 CC		= cc
 CFLAGS	= -Wall -Wextra -Werror -pthread
-RM		= rm -f
 
 SRCS	= main.c \
 		  utils.c \
