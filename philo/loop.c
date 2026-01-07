@@ -33,7 +33,7 @@ void	*philo_loop(void *arg)
 		return (NULL);
 	}
 	if (philo->philo_id % 2 == 0)
-		ft_usleep(1);
+		ft_usleep(philo->info->time->time_eat / 2);
 	while (1)
 	{
 		pthread_mutex_lock(&philo->info->finish_ctrl);

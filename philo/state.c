@@ -69,7 +69,7 @@ void	philo_think(t_philo *philo)
 	{
 		think_time = philo->info->time->time_eat * 2
 			- philo->info->time->time_sleep;
-		if (think_time > 0 && think_time < 600)
-			ft_usleep(think_time * 500);
+		if (think_time > 0)
+			ft_usleep(think_time / 2);
 	}
 }
