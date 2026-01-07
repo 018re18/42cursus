@@ -6,7 +6,7 @@
 #    By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/20 00:00:00 by rookuma           #+#    #+#              #
-#    Updated: 2025/10/20 17:07:18 by rookuma          ###   ########.fr        #
+#    Updated: 2025/12/07 16:40:51 by rookuma          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,9 +16,12 @@ CC		= cc
 CFLAGS	= -Wall -Wextra -Werror -pthread
 
 SRCS	= main.c \
-		  utils.c \
+		  init.c \
+		  utils1.c \
+		  utils2.c \
 		  state.c \
 		  loop.c \
+		  destroy.c \
 		  watcher.c
 
 OBJS	= $(SRCS:.c=.o)

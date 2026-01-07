@@ -6,35 +6,23 @@
 /*   By: rookuma <rookuma@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 17:06:15 by rookuma           #+#    #+#             */
-/*   Updated: 2025/10/20 17:07:15 by rookuma          ###   ########.fr       */
+/*   Updated: 2025/11/24 12:40:45 by rookuma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	philo_eat(t_philo *philo)
+static void	take_forks(t_philo *philo, pthread_mutex_t *first,
+		pthread_mutex_t *second)
 {
-	if (philo->philo_id == philo->info->time->num_philo)
-	{
-		pthread_mutex_lock(philo->fork_r);
-		print_status(philo, Take_Fork);
-		pthread_mutex_lock(philo->fork_l);
-		print_status(philo, Take_Fork);
-	}
-	else if (philo->philo_id % 2 == 0)
-	{
-		pthread_mutex_lock(philo->fork_r);
-		print_status(philo, Take_Fork);
-		pthread_mutex_lock(philo->fork_l);
-		print_status(philo, Take_Fork);
-	}
-	else
-	{
-		pthread_mutex_lock(philo->fork_l);
-		print_status(philo, Take_Fork);
-		pthread_mutex_lock(philo->fork_r);
-		print_status(philo, Take_Fork);
-	}
+	pthread_mutex_lock(first);
+	print_status(philo, Take_Fork);
+	pthread_mutex_lock(second);
+	print_status(philo, Take_Fork);
+}
+
+static void	update_eat_status(t_philo *philo)
+{
 	print_status(philo, Eat);
 	pthread_mutex_lock(&philo->last_eat_ctrl);
 	philo->last_eat_time = get_time();
@@ -43,8 +31,27 @@ void	philo_eat(t_philo *philo)
 	pthread_mutex_lock(&philo->eat_times_ctrl);
 	philo->num_eat_times++;
 	pthread_mutex_unlock(&philo->eat_times_ctrl);
-	pthread_mutex_unlock(philo->fork_r);
-	pthread_mutex_unlock(philo->fork_l);
+}
+
+void	philo_eat(t_philo *philo)
+{
+	pthread_mutex_t	*first_fork;
+	pthread_mutex_t	*second_fork;
+
+	if (philo->fork_r < philo->fork_l)
+	{
+		first_fork = philo->fork_r;
+		second_fork = philo->fork_l;
+	}
+	else
+	{
+		first_fork = philo->fork_l;
+		second_fork = philo->fork_r;
+	}
+	take_forks(philo, first_fork, second_fork);
+	update_eat_status(philo);
+	pthread_mutex_unlock(second_fork);
+	pthread_mutex_unlock(first_fork);
 }
 
 void	philo_sleep(t_philo *philo)
@@ -55,5 +62,14 @@ void	philo_sleep(t_philo *philo)
 
 void	philo_think(t_philo *philo)
 {
+	long	think_time;
+
 	print_status(philo, Think);
+	if (philo->info->time->num_philo % 2 != 0)
+	{
+		think_time = philo->info->time->time_eat * 2
+			- philo->info->time->time_sleep;
+		if (think_time > 0 && think_time < 600)
+			ft_usleep(think_time * 500);
+	}
 }
