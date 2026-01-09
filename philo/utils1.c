@@ -90,15 +90,16 @@ void	print_status(t_philo *philo, int mode)
 {
 	long	now_time;
 
+	now_time = get_time() - philo->info->start_time;
+	pthread_mutex_lock(&philo->info->print_ctrl);
 	pthread_mutex_lock(&philo->info->finish_ctrl);
 	if (philo->info->finish_flag == Finished)
 	{
 		pthread_mutex_unlock(&philo->info->finish_ctrl);
+		pthread_mutex_unlock(&philo->info->print_ctrl);
 		return ;
 	}
 	pthread_mutex_unlock(&philo->info->finish_ctrl);
-	now_time = get_time() - philo->info->start_time;
-	pthread_mutex_lock(&philo->info->print_ctrl);
 	if (mode == Take_Fork)
 		printf("%ld %d has taken a fork\n", now_time, philo->philo_id);
 	else if (mode == Eat)

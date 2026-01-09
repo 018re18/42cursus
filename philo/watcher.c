@@ -30,6 +30,9 @@ int	check_death(t_philo *philos, t_setting_time *time)
 		{
 			timestamp = now_time - philos[i].info->start_time;
 			pthread_mutex_lock(&philos[i].info->print_ctrl);
+			pthread_mutex_lock(&philos[i].info->finish_ctrl);
+			philos[i].info->finish_flag = Finished;
+			pthread_mutex_unlock(&philos[i].info->finish_ctrl);
 			printf("%ld %d died\n", timestamp, philos[i].philo_id);
 			pthread_mutex_unlock(&philos[i].info->print_ctrl);
 			return (1);
@@ -67,12 +70,7 @@ void	watcher_philo(t_philo *philos, t_setting_time *time,
 	while (1)
 	{
 		if (check_death(philos, time))
-		{
-			pthread_mutex_lock(&info->finish_ctrl);
-			info->finish_flag = Finished;
-			pthread_mutex_unlock(&info->finish_ctrl);
 			break ;
-		}
 		if (check_eat_times(philos, time))
 		{
 			pthread_mutex_lock(&info->finish_ctrl);
