@@ -12,12 +12,21 @@
 
 #include "philo.h"
 
+static void	print_death(t_philo *philo, long timestamp)
+{
+	pthread_mutex_lock(&philo->info->print_ctrl);
+	pthread_mutex_lock(&philo->info->finish_ctrl);
+	philo->info->finish_flag = Finished;
+	pthread_mutex_unlock(&philo->info->finish_ctrl);
+	printf("%ld %d died\n", timestamp, philo->philo_id);
+	pthread_mutex_unlock(&philo->info->print_ctrl);
+}
+
 int	check_death(t_philo *philos, t_setting_time *time)
 {
 	int		i;
 	long	now_time;
 	long	last_eat;
-	long	timestamp;
 
 	i = 0;
 	while (i < time->num_philo)
@@ -28,13 +37,7 @@ int	check_death(t_philo *philos, t_setting_time *time)
 		now_time = get_time();
 		if (now_time - last_eat >= time->time_die)
 		{
-			timestamp = now_time - philos[i].info->start_time;
-			pthread_mutex_lock(&philos[i].info->print_ctrl);
-			pthread_mutex_lock(&philos[i].info->finish_ctrl);
-			philos[i].info->finish_flag = Finished;
-			pthread_mutex_unlock(&philos[i].info->finish_ctrl);
-			printf("%ld %d died\n", timestamp, philos[i].philo_id);
-			pthread_mutex_unlock(&philos[i].info->print_ctrl);
+			print_death(&philos[i], now_time - philos[i].info->start_time);
 			return (1);
 		}
 		i++;
