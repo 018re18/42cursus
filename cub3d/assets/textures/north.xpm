@@ -1,0 +1,10 @@
+/* XPM */
+static char * north_xpm[] = {
+"4 4 2 1",
+"  c #000000",
+"X c #FF0000",
+"XXXX",
+"X  X",
+"X  X",
+"XXXX"
+};

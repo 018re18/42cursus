@@ -1,0 +1,13 @@
+C 40, 50, 60
+
+EA ./assets/textures/east.xpm
+NO ./assets/textures/north.xpm
+   
+F 10,20,30
+WE ./assets/textures/west.xpm
+SO ./assets/textures/south.xpm
+
+  11111
+  10N01
+  10001
+  11111
