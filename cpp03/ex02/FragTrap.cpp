@@ -1,18 +1,23 @@
 #include "FragTrap.hpp"
 
-FragTrap::FragTrap(void) : ClapTrap()
+// -------------------------------- 正準形 ----------------------------------
+
+void	FragTrap::_initStats(void)
 {
 	this->_hitPoints = 100;
 	this->_energyPoints = 100;
 	this->_attackDamage = 30;
+}
+
+FragTrap::FragTrap(void) : ClapTrap()
+{
+	this->_initStats();
 	std::cout << "FragTrap default constructor called" << std::endl;
 }
 
 FragTrap::FragTrap(std::string const &name) : ClapTrap(name)
 {
-	this->_hitPoints = 100;
-	this->_energyPoints = 100;
-	this->_attackDamage = 30;
+	this->_initStats();
 	std::cout << "FragTrap " << this->_name << " constructor called" << std::endl;
 }
 
@@ -22,6 +27,7 @@ FragTrap::FragTrap(FragTrap const &src) : ClapTrap(src)
 	*this = src;
 }
 
+// FragTrap は自前のメンバを持たないので、基底クラスに丸ごと任せる。
 FragTrap &FragTrap::operator=(FragTrap const &rhs)
 {
 	std::cout << "FragTrap copy assignment operator called" << std::endl;
@@ -34,6 +40,8 @@ FragTrap::~FragTrap(void)
 {
 	std::cout << "FragTrap " << this->_name << " destructor called" << std::endl;
 }
+
+// --------------------------------- 行動 -----------------------------------
 
 void	FragTrap::highFivesGuys(void)
 {

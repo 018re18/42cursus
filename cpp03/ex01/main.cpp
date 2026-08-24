@@ -12,20 +12,20 @@ int	main(void)
 		clappy.beRepaired(2);
 	}
 
-	std::cout << std::endl << "=== ScavTrap: construction chaining ===" << std::endl;
+	std::cout << std::endl << "=== ScavTrap: コンストラクタの連鎖 ===" << std::endl;
 	{
 		ScavTrap	scavy("SC4V-TP");
 
-		std::cout << std::endl << "--- actions ---" << std::endl;
+		std::cout << std::endl << "--- 行動 ---" << std::endl;
 		scavy.attack("Bandit");
 		scavy.takeDamage(30);
 		scavy.beRepaired(10);
 		scavy.guardGate();
 
-		std::cout << std::endl << "--- destruction chaining ---" << std::endl;
+		std::cout << std::endl << "--- デストラクタの連鎖 ---" << std::endl;
 	}
 
-	std::cout << std::endl << "=== ScavTrap: copy semantics ===" << std::endl;
+	std::cout << std::endl << "=== ScavTrap: コピーの挙動 ===" << std::endl;
 	{
 		ScavTrap	original("Original");
 		ScavTrap	copy(original);
@@ -37,7 +37,7 @@ int	main(void)
 		std::cout << std::endl;
 	}
 
-	std::cout << std::endl << "=== ScavTrap: energy exhaustion ===" << std::endl;
+	std::cout << std::endl << "=== ScavTrap: エネルギー切れ ===" << std::endl;
 	{
 		ScavTrap	tired("Tired");
 
@@ -47,7 +47,7 @@ int	main(void)
 		std::cout << std::endl;
 	}
 
-	std::cout << std::endl << "=== polymorphism through base pointer ===" << std::endl;
+	std::cout << std::endl << "=== 基底クラスのポインタ越しの多態 ===" << std::endl;
 	{
 		ClapTrap	*bot = new ScavTrap("Polymorphic");
 

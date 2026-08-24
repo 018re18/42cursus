@@ -1,18 +1,23 @@
 #include "ScavTrap.hpp"
 
-ScavTrap::ScavTrap(void) : ClapTrap()
+// -------------------------------- 正準形 ----------------------------------
+
+void	ScavTrap::_initStats(void)
 {
 	this->_hitPoints = 100;
 	this->_energyPoints = 50;
 	this->_attackDamage = 20;
+}
+
+ScavTrap::ScavTrap(void) : ClapTrap()
+{
+	this->_initStats();
 	std::cout << "ScavTrap default constructor called" << std::endl;
 }
 
 ScavTrap::ScavTrap(std::string const &name) : ClapTrap(name)
 {
-	this->_hitPoints = 100;
-	this->_energyPoints = 50;
-	this->_attackDamage = 20;
+	this->_initStats();
 	std::cout << "ScavTrap " << this->_name << " constructor called" << std::endl;
 }
 
@@ -22,6 +27,7 @@ ScavTrap::ScavTrap(ScavTrap const &src) : ClapTrap(src)
 	*this = src;
 }
 
+// ScavTrap は自前のメンバを持たないので、基底クラスに丸ごと任せる。
 ScavTrap &ScavTrap::operator=(ScavTrap const &rhs)
 {
 	std::cout << "ScavTrap copy assignment operator called" << std::endl;
@@ -35,21 +41,13 @@ ScavTrap::~ScavTrap(void)
 	std::cout << "ScavTrap " << this->_name << " destructor called" << std::endl;
 }
 
-void	ScavTrap::attack(const std::string &target)
+// --------------------------------- 行動 -----------------------------------
+
+// エネルギーの確認は ClapTrap と同じ。表示するメッセージだけが違う。
+void	ScavTrap::attack(std::string const &target)
 {
-	if (this->_hitPoints == 0)
-	{
-		std::cout << "ScavTrap " << this->_name
-			<< " has no hit points left and cannot attack..." << std::endl;
+	if (!this->_consumeEnergy("ScavTrap", "attack"))
 		return ;
-	}
-	if (this->_energyPoints == 0)
-	{
-		std::cout << "ScavTrap " << this->_name
-			<< " has no energy points left and cannot attack..." << std::endl;
-		return ;
-	}
-	this->_energyPoints--;
 	std::cout << "ScavTrap " << this->_name << " viciously bites " << target
 		<< ", causing " << this->_attackDamage << " points of damage!"
 		<< std::endl;

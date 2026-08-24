@@ -24,20 +24,20 @@ int	main(void)
 		std::cout << std::endl;
 	}
 
-	std::cout << std::endl << "=== FragTrap: construction chaining ===" << std::endl;
+	std::cout << std::endl << "=== FragTrap: コンストラクタの連鎖 ===" << std::endl;
 	{
 		FragTrap	fraggy("FR4G-TP");
 
-		std::cout << std::endl << "--- actions ---" << std::endl;
+		std::cout << std::endl << "--- 行動 ---" << std::endl;
 		fraggy.attack("Bandit");
 		fraggy.takeDamage(40);
 		fraggy.beRepaired(15);
 		fraggy.highFivesGuys();
 
-		std::cout << std::endl << "--- destruction chaining ---" << std::endl;
+		std::cout << std::endl << "--- デストラクタの連鎖 ---" << std::endl;
 	}
 
-	std::cout << std::endl << "=== FragTrap: copy semantics ===" << std::endl;
+	std::cout << std::endl << "=== FragTrap: コピーの挙動 ===" << std::endl;
 	{
 		FragTrap	original("Original");
 		FragTrap	copy(original);
@@ -49,7 +49,7 @@ int	main(void)
 		std::cout << std::endl;
 	}
 
-	std::cout << std::endl << "=== FragTrap: no hit points left ===" << std::endl;
+	std::cout << std::endl << "=== FragTrap: 体力 0 ===" << std::endl;
 	{
 		FragTrap	doomed("Doomed");
 
@@ -60,7 +60,7 @@ int	main(void)
 		std::cout << std::endl;
 	}
 
-	std::cout << std::endl << "=== each family keeps its own attack ===" << std::endl;
+	std::cout << std::endl << "=== それぞれが自分の attack を使う ===" << std::endl;
 	{
 		ClapTrap	*bots[3];
 

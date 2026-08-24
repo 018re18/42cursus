@@ -1,10 +1,13 @@
 #include "AAnimal.hpp"
 
+// -------------------------------- 正準形 ----------------------------------
+
 AAnimal::AAnimal(void) : type("AAnimal")
 {
 	std::cout << "AAnimal default constructor called" << std::endl;
 }
 
+// 派生クラスがここに自分の型名 ("Cat" など) を渡してくる。
 AAnimal::AAnimal(std::string const &type) : type(type)
 {
 	std::cout << "AAnimal constructor called for type " << this->type << std::endl;
@@ -28,6 +31,8 @@ AAnimal::~AAnimal(void)
 {
 	std::cout << "AAnimal destructor called" << std::endl;
 }
+
+// --------------------------------- ゲッター --------------------------------
 
 std::string const	&AAnimal::getType(void) const
 {

@@ -1,5 +1,7 @@
 #include "WrongAnimal.hpp"
 
+// -------------------------------- 正準形 ----------------------------------
+
 WrongAnimal::WrongAnimal(void) : type("WrongAnimal")
 {
 	std::cout << "WrongAnimal default constructor called" << std::endl;
@@ -29,6 +31,10 @@ WrongAnimal::~WrongAnimal(void)
 	std::cout << "WrongAnimal destructor called" << std::endl;
 }
 
+// --------------------------------- 鳴き声 ---------------------------------
+
+// virtual ではないので、WrongAnimal* から呼ぶと中身が WrongCat であっても
+// 必ずこちらが実行される。
 void	WrongAnimal::makeSound(void) const
 {
 	std::cout << "* a wrong animal makes a wrong noise *" << std::endl;
