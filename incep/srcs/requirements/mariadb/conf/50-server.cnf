@@ -9,7 +9,7 @@ datadir                 = /var/lib/mysql
 tmpdir                  = /tmp
 
 # Listen on the Docker network so the wordpress container can connect.
-# Port 3306 is never published to the host.
+# The port is never published to the host; the entrypoint sets it from DB_PORT.
 bind-address            = 0.0.0.0
 port                    = 3306
 

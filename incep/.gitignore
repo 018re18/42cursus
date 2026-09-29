@@ -2,4 +2,7 @@
 secrets/*
 !secrets/.gitkeep
 
+# Generated from srcs/.env.example by `make`
+srcs/.env
+
 .DS_Store

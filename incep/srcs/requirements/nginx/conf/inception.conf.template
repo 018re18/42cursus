@@ -1,6 +1,6 @@
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen __NGINX_PORT__ ssl;
+    listen [::]:__NGINX_PORT__ ssl;
 
     server_name __DOMAIN_NAME__;
 
@@ -18,12 +18,15 @@ server {
     location ~ \.php$ {
         try_files $uri =404;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass  wordpress:9000;
+        fastcgi_pass  wordpress:__WP_PORT__;
         fastcgi_index index.php;
         include       fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param PATH_INFO       $fastcgi_path_info;
         fastcgi_param HTTPS           on;
+        # Debian's fastcgi_params drops the port from HTTP_HOST; WordPress needs it
+        # to build its URLs when NGINX_PORT is not 443.
+        fastcgi_param HTTP_HOST       $host__HOST_PORT__;
     }
 
     location ~ /\.ht {

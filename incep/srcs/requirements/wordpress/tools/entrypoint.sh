@@ -7,7 +7,10 @@ WP_PATH=/var/www/html
 : "${DOMAIN_NAME:?DOMAIN_NAME is not set}"
 : "${MYSQL_DATABASE:?MYSQL_DATABASE is not set}"
 : "${MYSQL_USER:?MYSQL_USER is not set}"
-: "${MYSQL_HOST:?MYSQL_HOST is not set}"
+: "${DB_HOST:?DB_HOST is not set}"
+: "${DB_PORT:?DB_PORT is not set}"
+: "${WP_PORT:?WP_PORT is not set}"
+: "${NGINX_PORT:?NGINX_PORT is not set}"
 : "${WP_ADMIN_USER:?WP_ADMIN_USER is not set}"
 : "${WP_USER:?WP_USER is not set}"
 
@@ -27,6 +30,15 @@ esac
 
 wp() { command wp --allow-root --path="$WP_PATH" "$@"; }
 
+if [ "$NGINX_PORT" = 443 ]; then
+    WP_URL="https://$DOMAIN_NAME"
+else
+    WP_URL="https://$DOMAIN_NAME:$NGINX_PORT"
+fi
+
+# php-fpm listens on WP_PORT (nginx is configured with the same value).
+sed -i "s/^listen = .*/listen = 0.0.0.0:$WP_PORT/" /etc/php/8.2/fpm/pool.d/www.conf
+
 # Populate the (initially empty) volume with the WordPress sources.
 if [ ! -f "$WP_PATH/wp-load.php" ]; then
     echo "[wordpress] copying WordPress core into the volume"
@@ -35,7 +47,7 @@ fi
 
 # Wait for MariaDB (bounded: gives up after 60 seconds).
 i=0
-until mariadb-admin ping -h "$MYSQL_HOST" -P "${MYSQL_PORT:-3306}" \
+until mariadb-admin ping -h "$DB_HOST" -P "$DB_PORT" \
         -u "$MYSQL_USER" -p"$DB_PASSWORD" --silent >/dev/null 2>&1; do
     i=$((i + 1))
     if [ "$i" -ge 60 ]; then
@@ -51,20 +63,32 @@ if [ ! -f "$WP_PATH/wp-config.php" ]; then
         --dbname="$MYSQL_DATABASE" \
         --dbuser="$MYSQL_USER" \
         --dbpass="$DB_PASSWORD" \
-        --dbhost="$MYSQL_HOST:${MYSQL_PORT:-3306}" \
+        --dbhost="$DB_HOST:$DB_PORT" \
         --skip-check
 fi
 
+# Follow DB_PORT changes in an existing wp-config.php.
+wp config set DB_HOST "$DB_HOST:$DB_PORT" --quiet
+
 if ! wp core is-installed >/dev/null 2>&1; then
-    echo "[wordpress] installing site https://$DOMAIN_NAME"
+    echo "[wordpress] installing site $WP_URL"
     wp core install \
-        --url="https://$DOMAIN_NAME" \
+        --url="$WP_URL" \
         --title="${WP_TITLE:-Inception}" \
         --admin_user="$WP_ADMIN_USER" \
         --admin_password="$WP_ADMIN_PASSWORD" \
         --admin_email="$WP_ADMIN_EMAIL" \
         --skip-email
+    # Let the second user's comments appear without moderation, and do not
+    # try to send notification e-mails (there is no MTA in the container).
+    wp option update comment_previously_approved 0
+    wp option update comments_notify 0
+    wp option update moderation_notify 0
 fi
+
+# Keep the site URL in sync with .env when NGINX_PORT or DOMAIN_NAME changes.
+wp option update home "$WP_URL" --quiet
+wp option update siteurl "$WP_URL" --quiet
 
 if ! wp user get "$WP_USER" --field=ID >/dev/null 2>&1; then
     echo "[wordpress] creating user '$WP_USER'"

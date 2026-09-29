@@ -7,9 +7,13 @@ MARKER="$DATADIR/.inception_initialized"
 
 : "${MYSQL_DATABASE:?MYSQL_DATABASE is not set}"
 : "${MYSQL_USER:?MYSQL_USER is not set}"
+: "${DB_PORT:?DB_PORT is not set}"
 
 DB_PASSWORD="$(cat /run/secrets/db_password)"
 DB_ROOT_PASSWORD="$(cat /run/secrets/db_root_password)"
+
+sed -i "s/^port[[:space:]]*=.*/port                    = $DB_PORT/" \
+    /etc/mysql/mariadb.conf.d/50-server.cnf
 
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld "$DATADIR"
@@ -25,6 +29,9 @@ if [ ! -f "$MARKER" ]; then
     mariadbd --user=mysql --datadir="$DATADIR" --bootstrap --skip-networking <<EOF
 USE mysql;
 FLUSH PRIVILEGES;
+-- mariadb-install-db also creates root@127.0.0.1, root@::1 and
+-- root@<hostname> without a password: keep only root@localhost.
+DELETE FROM mysql.global_priv WHERE User='root' AND Host<>'localhost';
 DELETE FROM mysql.global_priv WHERE User='';
 DROP DATABASE IF EXISTS test;
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';

@@ -36,6 +36,12 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /var/www/html/wp-config.php && php -r 'exit(@fsockopen(\"127.0.0.1\", getenv(\"WP_PORT\")) ? 0 : 1);'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
     restart: always
 
   nginx:
@@ -44,13 +50,20 @@ services:
     container_name: nginx
     env_file: .env
     ports:
-      - "443:443"
+      - "${NGINX_PORT}:${NGINX_PORT}"
     volumes:
       - wordpress_data:/var/www/html:ro
     networks:
       - inception
     depends_on:
-      - wordpress
+      wordpress:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS -o /dev/null https://localhost:$$NGINX_PORT/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     restart: always
 
 volumes:
