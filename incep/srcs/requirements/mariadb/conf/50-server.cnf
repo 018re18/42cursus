@@ -1,0 +1,24 @@
+[server]
+
+[mysqld]
+user                    = mysql
+pid-file                = /run/mysqld/mysqld.pid
+socket                  = /run/mysqld/mysqld.sock
+basedir                 = /usr
+datadir                 = /var/lib/mysql
+tmpdir                  = /tmp
+
+# Listen on the Docker network so the wordpress container can connect.
+# Port 3306 is never published to the host.
+bind-address            = 0.0.0.0
+port                    = 3306
+
+skip-name-resolve
+character-set-server    = utf8mb4
+collation-server        = utf8mb4_unicode_ci
+
+# Log to stderr so `docker logs mariadb` shows errors
+log_error               = /dev/stderr
+
+[client]
+socket                  = /run/mysqld/mysqld.sock

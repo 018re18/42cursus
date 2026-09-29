@@ -1,0 +1,5 @@
+# Confidential data: generated locally by `make`, never committed
+secrets/*
+!secrets/.gitkeep
+
+.DS_Store
